@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\Brand;
+use yii\data\Pagination;
 use yii\web\Request;
 use yii\web\UploadedFile;
 
@@ -11,8 +12,25 @@ class BrandController extends \yii\web\Controller
     //显示品牌页面
     public function actionIndex()
     {
-        $models =Brand::find()->where(['!=','status','-1'])->all();
-        return $this->render('index',['models'=>$models]);
+        //分页 总条数 每页显示条数 当前第几页
+        $query = Brand::find();
+        //总条数
+        $total = $query->where(['!=','status','-1'])->count();
+        //var_dump($total);exit;
+        //每页显示条数 2
+        $perPage = 2;
+
+        //分页工具类
+        $page = new Pagination([
+            'totalCount'=>$total,
+            'defaultPageSize'=>$perPage
+        ]);
+
+        //LIMIT 0,3   ==> limit(3)->offset(0)
+        $models = $query->limit($page->limit)->offset($page->offset)->all();
+
+        return $this->render('index',['models'=>$models,'page'=>$page]);
+//        $models =Brand::find()->where(['!=','status','-1'])->all();
     }
 
     //增加品牌
