@@ -9,7 +9,7 @@
         <th>状态</th>
         <th>操作</th>
     </tr>
-    <?php foreach($models as $model): ?>
+    <?php foreach($models as $model):?>
         <tr>
             <td><?=$model->id?></td>
             <td><?=$model->name?></td>

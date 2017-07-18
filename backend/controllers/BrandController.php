@@ -11,7 +11,7 @@ class BrandController extends \yii\web\Controller
     //显示品牌页面
     public function actionIndex()
     {
-        $models =Brand::find()->all();
+        $models =Brand::find()->where(['!=','status','-1'])->all();
         return $this->render('index',['models'=>$models]);
     }
 
@@ -87,16 +87,23 @@ class BrandController extends \yii\web\Controller
     //删除品牌
     public function actionDel($id)
     {
+//        $model =Brand::findOne($id);
+//        //var_dump(\Yii::getAlias('@webroot'). $model->logo);exit;
+//        //删除图片
+//        if ($model->logo) {
+//            unlink(\Yii::getAlias('@webroot') . $model->logo);
+//        }
+//        //删除该数据
+//        $model->delete();
+//        //跳转
+//        return $this->redirect(['brand/index']);
+
+        //逻辑删除
         $model =Brand::findOne($id);
-        //var_dump(\Yii::getAlias('@webroot'). $model->logo);exit;
-        //删除图片
-        if ($model->logo) {
-            unlink(\Yii::getAlias('@webroot') . $model->logo);
-        }
-        //删除该数据
-        $model->delete();
+        $model->status=-1;
+        $model->save();
         //跳转
-        return $this->redirect(['brand/index']);
+       return $this->redirect(['brand/index']);
     }
 
 }
