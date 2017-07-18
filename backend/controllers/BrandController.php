@@ -19,7 +19,6 @@ class BrandController extends \yii\web\Controller
         //var_dump($total);exit;
         //每页显示条数 2
         $perPage = 2;
-
         //分页工具类
         $page = new Pagination([
             'totalCount'=>$total,
@@ -56,9 +55,12 @@ class BrandController extends \yii\web\Controller
                     $model->logo = $fileName;
                 }
                 //保存
-                $model->save();
-                //跳转到列表页
-                return $this->redirect(['brand/index']);//当前控制器 index操作
+                if($model->save()){
+                    //输出保存成功
+                    \yii::$app->session->setFlash('success','保存成功!');
+                    //跳转到列表页
+                    return $this->redirect(['brand/index']);//当前控制器 index操作
+                }
             } else {
                 //打印模型的验证错误信息
                 var_dump($model->getErrors());
@@ -90,9 +92,12 @@ class BrandController extends \yii\web\Controller
                     $model->logo = $fileName;
                 }
                 //保存
-                $model->save();
-                //跳转到列表页
-                return $this->redirect(['brand/index']);//当前控制器 index操作
+                if($model->save()){
+                    //输出修改成功
+                    \yii::$app->session->setFlash('success','修改成功!');
+                    //跳转到列表页
+                    return $this->redirect(['brand/index']);//当前控制器 index操作
+                }
             } else {
                 //打印模型的验证错误信息
                 var_dump($model->getErrors());
@@ -119,9 +124,13 @@ class BrandController extends \yii\web\Controller
         //逻辑删除
         $model =Brand::findOne($id);
         $model->status=-1;
-        $model->save();
-        //跳转
-       return $this->redirect(['brand/index']);
+        //保存
+        if($model->save()){
+            //输出删除成功
+            \yii::$app->session->setFlash('success','删除成功!');
+            //跳转到列表页
+            return $this->redirect(['brand/index']);//当前控制器 index操作
+        }
     }
 
 }
