@@ -41,7 +41,7 @@ class Brand extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name','sort','status'],'required','message'=>'必填'],
+            [['name','sort','status'],'required','message'=>'{attribute}必填'],
             [['intro'], 'string'],
             [['sort', 'status'], 'integer'],
             [['name'], 'string', 'max' => 50],

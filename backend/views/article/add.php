@@ -2,6 +2,7 @@
 $form=\yii\bootstrap\ActiveForm::begin();
 echo $form->field($model,'name');
 echo $form->field($model,'intro')->textarea();
+echo $form->field($article_detail,'content')->textarea();
 echo $form->field($model,'article_category_id')->dropDownList(\yii\helpers\ArrayHelper::map($article_category,'id','name'));
 echo $form->field($model,'sort')->textInput(['type'=>'number']);
 echo $form->field($model,'status',['inline'=>1])->radioList($model->statusoptions);

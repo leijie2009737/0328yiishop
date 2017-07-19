@@ -49,6 +49,7 @@ class Article extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['name','sort','article_category_id','status'],'required','message'=>'{attribute}必填'],
             [['intro'], 'string'],
             [['article_category_id', 'sort', 'status', 'create_time'], 'integer'],
             [['name'], 'string', 'max' => 50],
