@@ -24,4 +24,4 @@
 </table>
 <?php
 //分页工具条
-echo \yii\widgets\LinkPager::widget(['pagination'=>$page]);
+echo \yii\widgets\LinkPager::widget(['pagination'=>$page,'nextPageLabel'=>'下一页','prevPageLabel'=>'上一页','firstPageLabel'=>'首页']);

@@ -42,7 +42,7 @@ class ArticleController extends \yii\web\Controller
             $article_detail->load($request->post());
             //var_dump($model->id);exit;
             //var_dump($article_detail);exit;
-            if ($model->validate()) {
+            if ($model->validate() && $article_detail->validate()) {
                 //保存
                 $model->save();
                 //var_dump($model->id);exit;
@@ -110,5 +110,13 @@ class ArticleController extends \yii\web\Controller
             //跳转到列表页
             return $this->redirect(['article/index']);//当前控制器 index操作
         }
+    }
+
+    //显示文章的详情页
+    public function actionShow($id)
+    {
+        $model = ArticleDetail::findOne($id);
+        //var_dump($model);exit;
+        return $this->render('show',['model'=>$model]);
     }
 }
