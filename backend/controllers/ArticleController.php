@@ -115,8 +115,21 @@ class ArticleController extends \yii\web\Controller
     //显示文章的详情页
     public function actionShow($id)
     {
+        $model2=Article::findOne($id);
         $model = ArticleDetail::findOne($id);
+        $model1=ArticleCategory::findOne($model2->article_category_id);
+
         //var_dump($model);exit;
-        return $this->render('show',['model'=>$model]);
+        return $this->render('show',['model'=>$model,'model1'=>$model1,'model2'=>$model2]);
+    }
+
+    //UEditor插件
+    public function actions()
+    {
+        return [
+            'upload' => [
+                'class' => 'kucha\ueditor\UEditorAction',
+            ]
+        ];
     }
 }
