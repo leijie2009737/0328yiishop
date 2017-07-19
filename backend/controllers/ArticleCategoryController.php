@@ -14,7 +14,7 @@ class ArticleCategoryController extends \yii\web\Controller
         //分页 总条数 每页显示条数 当前第几页
         $query = ArticleCategory::find();
         //总条数
-        $total = $query->where(['!=','status','-1'])->count();
+        $total = $query->where(['!=','status','-1'])->orderBy('sort desc')->count();
         //var_dump($total);exit;
         //每页显示条数 2
         $perPage = 2;
