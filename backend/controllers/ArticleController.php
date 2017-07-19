@@ -11,12 +11,13 @@ use yii\web\Request;
 class ArticleController extends \yii\web\Controller
 {
     //显示
-    public function actionIndex()
+    public function actionIndex($keywords='')
     {
         //分页 总条数 每页显示条数 当前第几页
-        $query = Article::find();
+        //$query = Article::find();
         //总条数(只查询未删除的数据)
-        $total = $query->where(['!=','status','-1'])->orderBy('sort desc')->count();
+        $query= Article::find()->where(['and','status>-1',"name like '%{$keywords}%'"]);
+        $total = $query->orderBy('sort desc')->count();
         //var_dump($total);exit;
         //每页显示条数 2
         $perPage = 2;

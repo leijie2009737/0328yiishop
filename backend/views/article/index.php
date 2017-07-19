@@ -1,4 +1,12 @@
-<table class="table table-bordered table-condensed">
+<form action="" method="get">
+    <div class="input-group col-md-3 pull-right" style="margin-top:0px positon:relative">
+        <input name="keywords" type="text" class="form-control"placeholder="请输入文章名字" / >
+        <span class="input-group-btn">
+               <button class="btn btn-info btn-search">查找</button>
+            </span>
+    </div>
+</form>
+<table style="margin: 10px 0" class="table table-bordered table-condensed">
     <?=\yii\helpers\Html::a('添加',['article/add'],['class'=>'btn btn-sm btn-primary'])?>
     <tr>
         <th>ID</th>
