@@ -4,24 +4,100 @@ namespace backend\controllers;
 
 
 use backend\models\GoodsCategory;
+use yii\data\Pagination;
+use yii\web\HttpException;
 
 class GoodsCategoryController extends \yii\web\Controller
 {
     //显示商品分类
-    public function actionIndex()
+    public function actionIndex($keywords='')
     {
-        $model =new GoodsCategory();
-        return $this->render('index',['model'=>$model]);
+        //分页 总条数 每页显示条数 当前第几页
+        $query = GoodsCategory::find()->where(['and',"name like '%{$keywords}%'"]);
+        //var_dump($query);exit;
+        //总条数
+        $total = $query->orderBy('parent_id')->count();
+        //var_dump($total);exit;
+        //每页显示条数 5
+        $perPage = 5;
+        //分页工具类
+        $page = new Pagination([
+            'totalCount'=>$total,
+            'defaultPageSize'=>$perPage
+        ]);
+
+        //LIMIT 0,3   ==> limit(3)->offset(0)
+        $models = $query->limit($page->limit)->offset($page->offset)->all();
+        return $this->render('index',['models'=>$models,'page'=>$page]);
     }
 
 
     //增加商品分类
     public function actionAdd()
     {
-        $model =new GoodsCategory();
+        $model = new GoodsCategory(['parent_id'=>0]);
+        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+            //判断同级分类是否重名
+            $sql="select name from goods_category where parent_id={$model->parent_id}";
+            $connection=\Yii::$app->db;
+            $command=$connection->createCommand($sql);
+            $result = $command->queryAll();
+//            print_r($result);
+            var_dump($result);exit;
 
 
-        return $this->render('add',['model'=>$model]);
+            //判断是否是添加一级分类
+            if($model->parent_id){
+                //非一级分类
+                $category = GoodsCategory::findOne(['id'=>$model->parent_id]);
+                if($category){
+                    $model->prependTo($category);
+                }else{
+                    throw new HttpException(404,'上级分类不存在');
+                }
+
+            }else{
+                //一级分类
+                $model->makeRoot();
+            }
+            \Yii::$app->session->setFlash('success','商品分类添加成功');
+            return $this->redirect(['index']);
+
+        }
+        //获取所以分类数据
+        $categories = GoodsCategory::find()->select(['id','parent_id','name'])->asArray()->all();
+        return $this->render('add',['model'=>$model,'categories'=>$categories]);
+    }
+
+    //修改分类
+    public function actionEdit($parent_id)
+    {
+        $model =GoodsCategory::findOne($parent_id);
+        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+            //$model->save();
+            //判断是否是添加一级分类
+            if($model->parent_id){
+                //非一级分类
+
+                $category = GoodsCategory::findOne(['id'=>$model->parent_id]);
+                if($category){
+                    $model->prependTo($category);
+                }else{
+                    throw new HttpException(404,'上级分类不存在');
+                }
+
+            }else{
+                //一级分类
+                $model->makeRoot();
+            }
+            \Yii::$app->session->setFlash('success','商品分类添加成功');
+            return $this->redirect(['index']);
+
+        }
+        //获取所以分类数据
+        $categories = GoodsCategory::find()->select(['id','parent_id','name'])->asArray()->all();
+        return $this->render('add',['model'=>$model,'categories'=>$categories]);
+
     }
 
     //测试嵌套集合
@@ -40,5 +116,13 @@ class GoodsCategoryController extends \yii\web\Controller
         $category2->parent_id = $category->id;
         $category2->prependTo($category);
         echo 1111222;
+    }
+
+    //测试Ztree
+    public function actionTest1()
+    {
+        //$this->layout = false;
+        //不加载布局文件
+        return $this->renderPartial('test');
     }
 }
