@@ -13,15 +13,14 @@ echo $form->field($article_detail,'content')->widget('kucha\ueditor\UEditor',
         'lang' =>'en', //中文为 zh-cn
         //定制菜单
         'toolbars' => [
-            [
-                'fullscreen', 'source', 'undo', 'redo', '|',
-                'fontsize',
-                'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'removeformat',
-                'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|',
-                'forecolor', 'backcolor', '|',
-                'lineheight', '|',
-                'indent', '|'
-            ],
+            ['fullscreen', 'source', 'undo', 'redo', 'bold', 'italic',
+                'underline','fontborder', 'backcolor', 'fontsize', 'fontfamily',
+                'justifyleft', 'justifyright','justifycenter', 'justifyjustify',
+                'strikethrough','superscript', 'subscript', 'removeformat',
+                'formatmatch','autotypeset', 'blockquote', 'pasteplain', '|',
+                'forecolor', 'backcolor','insertorderedlist', 'insertunorderedlist',
+                'selectall', 'cleardoc', 'link', 'unlink','emotion', 'help',                        'simpleupload','insertimage'
+            ]
         ]
     ]
 ]);

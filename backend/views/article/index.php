@@ -1,5 +1,5 @@
 <form action="" method="get">
-    <div class="input-group col-md-3 pull-right" style="margin-top:0px positon:relative">
+    <div class="input-group col-md-3 pull-right" >
         <input name="keywords" type="text" class="form-control"placeholder="请输入文章名字" / >
         <span class="input-group-btn">
                <button class="btn btn-info btn-search">查找</button>
