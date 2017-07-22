@@ -2,6 +2,7 @@
 /**
  * @var $this \yii\web\View
  */
+
 $form = \yii\bootstrap\ActiveForm::begin();
 echo $form->field($model,'name');
 echo $form->field($model,'parent_id')->hiddenInput();
@@ -13,6 +14,8 @@ echo $form->field($model,'intro');
 echo \yii\bootstrap\Html::submitButton('提交',['class'=>'btn btn-info']);
 \yii\bootstrap\ActiveForm::end();
 
+
+
 //调用视图的方法加载静态资源
 //加载css文件
 $this->registerCssFile('@web/zTree/css/zTreeStyle/zTreeStyle.css');
@@ -21,6 +24,7 @@ $this->registerJsFile('@web/zTree/js/jquery.ztree.core.js',['depends'=>\yii\web\
 $categories[] = ['id'=>0,'parent_id'=>0,'name'=>'顶级分类','open'=>1];
 $nodes = \yii\helpers\Json::encode($categories);
 $nodeId = $model->parent_id;
+//var_dump($model->parent_id);exit;
 $this->registerJs(new \yii\web\JsExpression(
     <<<JS
 var zTreeObj;
