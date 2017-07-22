@@ -38,12 +38,6 @@ class GoodsCategoryController extends \yii\web\Controller
         $model = new GoodsCategory(['parent_id'=>0]);
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
             //判断同级分类是否重名
-            $sql="select name from goods_category where parent_id={$model->parent_id}";
-            $connection=\Yii::$app->db;
-            $command=$connection->createCommand($sql);
-            $result = $command->queryAll();
-//            print_r($result);
-            var_dump($result);exit;
 
 
             //判断是否是添加一级分类
@@ -99,6 +93,22 @@ class GoodsCategoryController extends \yii\web\Controller
         return $this->render('add',['model'=>$model,'categories'=>$categories]);
 
     }
+
+
+    //删除
+    public function actionDel($id)
+    {
+        $model = GoodsCategory::findOne(['parent_id'=>$id]);
+        if($model){
+            \Yii::$app->session->setFlash('danger','分类下有子分类，不能删除');
+            return $this->redirect(['index']);
+
+        }
+        GoodsCategory::findOne($id)->delete();
+        return $this->redirect(['index']);
+    }
+
+
 
     //测试嵌套集合
     public function actionTest()

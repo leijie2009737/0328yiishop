@@ -22,7 +22,7 @@
             <td><?=$model->parent_id?></td>
             <td><?=$model->intro?></td>
             <td><?=\yii\helpers\Html::a('修改',['goods-category/edit/','parent_id'=>$model->id],['class'=>'btn btn-sm btn-warning'])?>
-                <?=\yii\helpers\Html::a('删除',['goods-category/del','parent_id'=>$model->id],['class'=>'btn btn-sm btn-danger pull-right'])?></td>
+                <?=\yii\helpers\Html::a('删除',['goods-category/del','id'=>$model->id],['class'=>'btn btn-sm btn-danger pull-right'])?></td>
         </tr>
     <?php endforeach;?>
 </table>
