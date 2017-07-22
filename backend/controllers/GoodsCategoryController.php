@@ -35,32 +35,43 @@ class GoodsCategoryController extends \yii\web\Controller
     //增加商品分类
     public function actionAdd()
     {
-        $model = new GoodsCategory(['parent_id'=>0]);
-        if($model->load(\Yii::$app->request->post()) && $model->validate()){
-            //判断同级分类是否重名
-            //var_dump($model);exit;
-
+        //实例化商品分类模型
+        $goodsCategory=new GoodsCategory(['parent_id'=>0]);
+        //判断提交方式，验证数据
+        if($goodsCategory->load(\Yii::$app->request->post()) && $goodsCategory->validate()){
+            $name=$goodsCategory->name;
+            $parent_id=$goodsCategory->parent_id;
+            $category=GoodsCategory::find()->andWhere(['name'=>$name,'parent_id'=>$parent_id])->all();
+//               var_dump($category);exit;
+            if($category){
+                \Yii::$app->session->setFlash('warning','该分类已存在');
+                //跳转到添加页面
+                return $this->redirect(['goods-category/add']);
+            }
+            //$goodsCategory->save();//因为需要判断计算节点，所以不能直接保存
             //判断是否是添加一级分类
-            if($model->parent_id){
+            if($goodsCategory->parent_id){
                 //非一级分类
-                $category = GoodsCategory::findOne(['id'=>$model->parent_id]);
+                $category=GoodsCategory::findOne(['id'=>$goodsCategory->parent_id]);
                 if($category){
-                    $model->prependTo($category);
+                    $goodsCategory->prependTo($category);
                 }else{
-                    throw new HttpException(404,'上级分类不存在');
+                    throw new HttpException('404','上级分类不存在');
                 }
 
             }else{
                 //一级分类
-                $model->makeRoot();
+                $goodsCategory->makeRoot();
             }
-            \Yii::$app->session->setFlash('success','商品分类添加成功');
-            return $this->redirect(['index']);
-
+            //添加成功后，提示
+            \Yii::$app->session->setFlash('success','添加成功');
+            //跳转到列表页
+            return $this->redirect(['goods-category/index']);
         }
-        //获取所以分类数据
-        $categories = GoodsCategory::find()->select(['id','parent_id','name'])->asArray()->all();
-        return $this->render('add',['model'=>$model,'categories'=>$categories]);
+        //获取所有分类数据
+        $categories=GoodsCategory::find()->select(['id','parent_id','name'])->asArray()->all();
+        //调用视图，并传值
+        return $this->render('add',['goodsCategory'=>$goodsCategory,'categories'=>$categories]);
     }
 
     //修改分类

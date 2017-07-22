@@ -3,6 +3,8 @@
 namespace backend\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "goods".
@@ -25,7 +27,7 @@ use Yii;
 class Goods extends \yii\db\ActiveRecord
 {
     //定义私有属性（是否上架）
-    public static $getIsOnSale=[0=>'下架', 1=>'上架'];
+    public static $getIsOnSale=[ 1=>'上架',0=>'下架'];
 //    public function getIsOnSale(){
 //         return $options=[0=>'下架', 1=>'上架'];
 //    }
@@ -43,7 +45,7 @@ class Goods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name','logo','goods_category_id','brand_id','market_price','shop_price','stock','is_on_sale','sort'],'required','message'=>"{attribute}必填"],
+            [['name','goods_category_id','brand_id','market_price','shop_price','stock','is_on_sale','sort'],'required','message'=>"{attribute}必填"],
             [['goods_category_id', 'brand_id', 'stock', 'is_on_sale', 'status', 'sort', 'create_time', 'view_times'], 'integer'],
             [['market_price', 'shop_price'], 'number'],
             [['name', 'sn'], 'string', 'max' => 60],
@@ -71,6 +73,21 @@ class Goods extends \yii\db\ActiveRecord
             'sort' => '	排序',
             'create_time' => '添加时间',
             'view_times' => '浏览次数',
+        ];
+    }
+
+
+    //时间行为
+    public function behaviors()
+    {
+        return [
+            'time'=>[
+                'class'=>TimestampBehavior::className(),
+                'attributes'=>[
+                    ActiveRecord::EVENT_BEFORE_INSERT => 'create_time',
+                    // ActiveRecord::EVENT_BEFORE_UPDATE => 'update_time',
+                ]
+            ]
         ];
     }
 }

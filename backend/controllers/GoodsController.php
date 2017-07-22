@@ -5,8 +5,12 @@ namespace backend\controllers;
 use backend\models\Brand;
 use backend\models\Goods;
 use backend\models\GoodsCategory;
+use backend\models\GoodsDayCount;
 use backend\models\GoodsIntro;
+use flyok666\qiniu\Qiniu;
+use flyok666\uploadifive\UploadAction;
 use yii\data\Pagination;
+use yii\web\Request;
 
 class GoodsController extends \yii\web\Controller
 {
@@ -16,10 +20,10 @@ class GoodsController extends \yii\web\Controller
         $query = Goods::find();
         //总条数
         //$total = $query->where(['!=','status','-1'])->count();
-        $total = $query->where(['>','status',0])->orderBy('sort asc')->count();
+        $total = $query->where(['>','status',0])->orderBy('id asc')->count();
         //var_dump($total);exit;
-        //每页显示条数 2
-        $perPage = 2;
+        //每页显示条数 10
+        $perPage = 10;
         //分页工具类
         $page = new Pagination([
             'totalCount'=>$total,
@@ -36,7 +40,6 @@ class GoodsController extends \yii\web\Controller
     //增加商品
     public function actionAdd()
     {
-        $model = new Goods();
         //获取商品分类数据
         $categories = GoodsCategory::find()->select(['id','parent_id','name'])->asArray()->all();
         $category = new GoodsCategory();
@@ -44,8 +47,102 @@ class GoodsController extends \yii\web\Controller
         $brands = Brand::find()->all();
         //商品详情
         $goods_intro= new GoodsIntro();
+        $model = new Goods();
+        $request = new Request();
+        if($request->isPost){
+            $model->load($request->post());
+            $goods_intro->load($request->post());
+//            var_dump($model);
+//            var_dump($goods_intro);exit;
+            if ($model->validate() && $goods_intro->validate()) {
+                $sn= GoodsDayCount::getGoodsSn();
+//              var_dump($sn);exit;
+                $model->sn=$sn;
+                //默认商品状态正常
+                $model->status=1;
+                $model->save();
+                //保存商品的详情
+                $goods_intro->goods_id=$model->id;
+                $goods_intro->save();
+
+            } else {
+                //打印模型的验证错误信息
+                var_dump($model->getErrors());
+                exit;
+            }
+            //输出保存成功
+            \yii::$app->session->setFlash('success','添加成功!');
+            //跳转到列表页
+            return $this->redirect(['goods/index']);
+        }
+
+
+
+
         return $this->render('add',['model'=>$model,'category'=>$category,'categories'=>$categories,'brands'=>$brands,'goods_intro'=>$goods_intro]);
     }
 
     //uploadfive插件
+    public function actions()
+    {
+        return [
+            's-upload' => [
+                'class' => UploadAction::className(),
+                'basePath' => '@webroot/upload',
+                'baseUrl' => '@web/upload',
+                'enableCsrf' => true, // default
+                'postFieldName' => 'Filedata', // default
+                //BEGIN METHOD
+                //'format' => [$this, 'methodName'],
+                //END METHOD
+                //BEGIN CLOSURE BY-HASH
+                'overwriteIfExist' => true,//如果文件已存在，是否覆盖
+                /* 'format' => function (UploadAction $action) {
+                     $fileext = $action->uploadfile->getExtension();
+                     $filename = sha1_file($action->uploadfile->tempName);
+                     return "{$filename}.{$fileext}";
+                 },*/
+                //END CLOSURE BY-HASH
+                //BEGIN CLOSURE BY TIME
+                'format' => function (UploadAction $action) {
+                    $fileext = $action->uploadfile->getExtension();
+                    $filehash = sha1(uniqid() . time());
+                    $p1 = substr($filehash, 0, 2);
+                    $p2 = substr($filehash, 2, 2);
+                    return "{$p1}/{$p2}/{$filehash}.{$fileext}";
+                },//文件的保存方式
+                //END CLOSURE BY TIME
+                'validateOptions' => [
+                    'extensions' => ['jpg', 'png'],
+                    'maxSize' => 1 * 1024 * 1024, //file size
+                ],
+                'beforeValidate' => function (UploadAction $action) {
+                    //throw new Exception('test error');
+                },
+                'afterValidate' => function (UploadAction $action) {},
+                'beforeSave' => function (UploadAction $action) {},
+                'afterSave' => function (UploadAction $action) {
+                    $action->output['fileUrl'] = $action->getWebUrl();//输出文件的相对路径
+//                    $action->getFilename();
+//                    "image/yyyymmddtimerand.jpg"
+//                    $action->getWebUrl();
+//                    "baseUrl + filename, /upload/image/yyyymmddtimerand.jpg"
+//                    $action->getSavePath();
+//                    "/var/www/htdocs/upload/image/yyyymmddtimerand.jpg"
+
+
+                    //将图片上传到七牛云
+//                    $qiniu = new Qiniu(\Yii::$app->params['qiniu']);
+//                    $qiniu->uploadFile(
+//                        $action->getSavePath(), $action->getWebUrl()
+//                    );
+//                    $url = $qiniu->getLink($action->getWebUrl());
+//                    $action->output['fileUrl']  = $url;
+                },
+            ],
+        ];
+    }
+
+
+
 }

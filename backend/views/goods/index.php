@@ -8,7 +8,6 @@
         <th>商品价格</th>
         <th>库存</th>
         <th>是否在售</th>
-        <th>状态</th>
         <th>操作</th>
     </tr>
     <?php foreach($models as $model):?>

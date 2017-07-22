@@ -105,7 +105,7 @@ var zTreeObj;
 		        onClick: function(event, treeId, treeNode){
 		            //console.log(treeNode.id);
 		            //将当期选中的分类的id，赋值给parent_id隐藏域
-		            $("#goodscategory-parent_id").val(treeNode.id);
+		            $("#goods-goods_category_id").val(treeNode.id);
 		        }
 	        }
         };
