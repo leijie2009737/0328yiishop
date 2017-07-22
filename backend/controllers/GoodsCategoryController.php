@@ -16,7 +16,7 @@ class GoodsCategoryController extends \yii\web\Controller
         $query = GoodsCategory::find()->where(['and',"name like '%{$keywords}%'"]);
         //var_dump($query);exit;
         //总条数
-        $total = $query->orderBy('parent_id')->count();
+        $total = $query->orderBy('tree,lft')->count();
         //var_dump($total);exit;
         //每页显示条数 5
         $perPage = 5;
@@ -38,7 +38,7 @@ class GoodsCategoryController extends \yii\web\Controller
         $model = new GoodsCategory(['parent_id'=>0]);
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
             //判断同级分类是否重名
-
+            //var_dump($model);exit;
 
             //判断是否是添加一级分类
             if($model->parent_id){
@@ -81,8 +81,12 @@ class GoodsCategoryController extends \yii\web\Controller
                 }
 
             }else{
+                if($model->oldAttributes['parent_id']==0){
+                  $model->save();
+                }
                 //一级分类
                 $model->makeRoot();
+
             }
             \Yii::$app->session->setFlash('success','商品分类添加成功');
             return $this->redirect(['index']);
@@ -105,6 +109,7 @@ class GoodsCategoryController extends \yii\web\Controller
 
         }
         GoodsCategory::findOne($id)->delete();
+        \Yii::$app->session->setFlash('danger','删除成功');
         return $this->redirect(['index']);
     }
 

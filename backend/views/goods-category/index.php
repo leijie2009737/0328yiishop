@@ -18,7 +18,7 @@
     <?php foreach($models as $model):?>
         <tr>
             <td><?=$model->id?></td>
-            <td><?=$model->name?></td>
+            <td><?=str_repeat('—— ',$model['depth']),$model->name?></td>
             <td><?=$model->parent_id?></td>
             <td><?=$model->intro?></td>
             <td><?=\yii\helpers\Html::a('修改',['goods-category/edit/','parent_id'=>$model->id],['class'=>'btn btn-sm btn-warning'])?>
