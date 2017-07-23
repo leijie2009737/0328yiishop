@@ -58,7 +58,11 @@ echo $form->field($model,'is_on_sale',['inline'=>1])->radioList(\backend\models\
 echo $form->field($model,'sort')->textInput(['type'=>'number']);
 
 //商品详情
-echo $form->field($goods_intro,'content')->widget('kucha\ueditor\UEditor',[
+$content =$goods_intro->content;
+//editor.setContent($content);
+
+echo $form->field($goods_intro
+    ,'content')->widget('kucha\ueditor\UEditor',[
     'clientOptions' => [
         //编辑区域大小
         'initialFrameHeight' => '200',
@@ -87,7 +91,7 @@ $this->registerCssFile('@web/zTree/css/zTreeStyle/zTreeStyle.css');
 $this->registerJsFile('@web/zTree/js/jquery.ztree.core.js',['depends'=>\yii\web\JqueryAsset::className()]);
 $categories[] = ['id'=>0,'parent_id'=>0,'name'=>'顶级分类','open'=>1];
 $nodes = \yii\helpers\Json::encode($categories);
-$nodeId = $category->parent_id;
+$nodeId = $category->id;
 $this->registerJs(new \yii\web\JsExpression(
     <<<JS
 var zTreeObj;

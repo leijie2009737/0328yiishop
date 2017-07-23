@@ -1,5 +1,8 @@
-<table class="table table-bordered table-condensed">
+<div class="table-responsive">
     <?=\yii\helpers\Html::a('添加',['goods/add'],['class'=>'btn btn-sm btn-primary'])?>
+    <?=\yii\helpers\Html::a('回收站',['goods/back'],['class'=>'btn btn-sm btn-primary'])?>
+
+    <table style="margin: 20px 0;" class="table table-bordered table-condensed">
     <tr>
         <th>ID</th>
         <th>货号</th>
@@ -19,11 +22,14 @@
             <td><?=$model->shop_price?></td>
             <td><?=$model->stock?></td>
             <td><?=$model->is_on_sale?'在售':'下架'?></td>
-            <td><?=\yii\helpers\Html::a('修改',['goods/edit/','id'=>$model->id],['class'=>'btn btn-sm btn-warning'])?>
-                <?=\yii\helpers\Html::a('删除',['goods/del','id'=>$model->id],['class'=>'btn btn-sm btn-danger pull-right'])?></td>
+            <td style="width: 208px"><?=\yii\helpers\Html::a('修改',['goods/edit/','id'=>$model->id],['class'=>'btn btn-sm btn-warning'])?>
+                <?=\yii\helpers\Html::a('查看',['goods/show/','id'=>$model->id],['class'=>'btn btn-sm btn-info'])?>
+                <?=\yii\helpers\Html::a('预览',['goods/preview/','id'=>$model->id],['class'=>'btn btn-sm btn-info'])?>
+                <?=\yii\helpers\Html::a('删除',['goods/recycle','id'=>$model->id],['class'=>'btn btn-sm btn-danger '])?></td>
         </tr>
     <?php endforeach;?>
 </table>
+</div>
 <?php
 //分页工具条
 echo \yii\widgets\LinkPager::widget(['pagination'=>$page,'nextPageLabel'=>'下一页','prevPageLabel'=>'上一页','firstPageLabel'=>'首页']);

@@ -36,11 +36,11 @@ class GoodsCategoryController extends \yii\web\Controller
     public function actionAdd()
     {
         //实例化商品分类模型
-        $goodsCategory=new GoodsCategory(['parent_id'=>0]);
+        $model=new GoodsCategory(['parent_id'=>0]);
         //判断提交方式，验证数据
-        if($goodsCategory->load(\Yii::$app->request->post()) && $goodsCategory->validate()){
-            $name=$goodsCategory->name;
-            $parent_id=$goodsCategory->parent_id;
+        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+            $name=$model->name;
+            $parent_id=$model->parent_id;
             $category=GoodsCategory::find()->andWhere(['name'=>$name,'parent_id'=>$parent_id])->all();
 //               var_dump($category);exit;
             if($category){
@@ -50,18 +50,18 @@ class GoodsCategoryController extends \yii\web\Controller
             }
             //$goodsCategory->save();//因为需要判断计算节点，所以不能直接保存
             //判断是否是添加一级分类
-            if($goodsCategory->parent_id){
+            if($model->parent_id){
                 //非一级分类
-                $category=GoodsCategory::findOne(['id'=>$goodsCategory->parent_id]);
+                $category=GoodsCategory::findOne(['id'=>$model->parent_id]);
                 if($category){
-                    $goodsCategory->prependTo($category);
+                    $model->prependTo($category);
                 }else{
                     throw new HttpException('404','上级分类不存在');
                 }
 
             }else{
                 //一级分类
-                $goodsCategory->makeRoot();
+                $model->makeRoot();
             }
             //添加成功后，提示
             \Yii::$app->session->setFlash('success','添加成功');
@@ -71,7 +71,7 @@ class GoodsCategoryController extends \yii\web\Controller
         //获取所有分类数据
         $categories=GoodsCategory::find()->select(['id','parent_id','name'])->asArray()->all();
         //调用视图，并传值
-        return $this->render('add',['goodsCategory'=>$goodsCategory,'categories'=>$categories]);
+        return $this->render('add',['model'=>$model,'categories'=>$categories]);
     }
 
     //修改分类

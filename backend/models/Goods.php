@@ -45,7 +45,7 @@ class Goods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name','goods_category_id','brand_id','market_price','shop_price','stock','is_on_sale','sort'],'required','message'=>"{attribute}必填"],
+            [['name','goods_category_id','brand_id','market_price','shop_price','stock','is_on_sale','sort','logo'],'required','message'=>"{attribute}必填"],
             [['goods_category_id', 'brand_id', 'stock', 'is_on_sale', 'status', 'sort', 'create_time', 'view_times'], 'integer'],
             [['market_price', 'shop_price'], 'number'],
             [['name', 'sn'], 'string', 'max' => 60],
