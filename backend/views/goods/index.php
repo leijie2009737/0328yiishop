@@ -1,8 +1,32 @@
+
 <div class="table-responsive">
-    <?=\yii\helpers\Html::a('添加',['goods/add'],['class'=>'btn btn-sm btn-primary'])?>
-    <?=\yii\helpers\Html::a('回收站',['goods/back'],['class'=>'btn btn-sm btn-primary'])?>
+    <form action="" method="get">
+
+        <div class="input-group col-md-2 pull-right" >
+            <input name="price2" type="text" class="form-control"placeholder="商品最高价格" / >
+            <span class="input-group-btn">
+               <button class="btn btn-info btn-search">查找</button>
+            </span>
+        </div>
+        <div class="input-group  pull-right" >：</div>
+        <div class="input-group col-md-2 pull-right" >
+            <input name="price1" type="text" class="form-control"placeholder="商品起始价格" />
+        </div>
+
+        <div class="input-group col-md-2 pull-right" >
+            <input name="sn" type="text" class="form-control"placeholder="商品货号" / >
+        </div>
+        <div class="input-group col-md-2 pull-right" >
+            <input name="name" type="text" class="form-control"placeholder="商品名称" / >
+
+        </div>
+
+    </form>
+
 
     <table style="margin: 20px 0;" class="table table-bordered table-condensed">
+        <?=\yii\helpers\Html::a('添加',['goods/add'],['class'=>'btn btn-sm btn-primary'])?>
+        <?=\yii\helpers\Html::a('回收站',['goods/back'],['class'=>'btn btn-sm btn-primary'])?>
     <tr>
         <th>ID</th>
         <th>货号</th>

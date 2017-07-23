@@ -15,12 +15,37 @@ use yii\web\Request;
 class GoodsController extends \yii\web\Controller
 {
     //显示页面
-    public function actionIndex()
+    public function actionIndex($name='',$sn='',$price1='',$price2='')
     {
-        $query = Goods::find();
-        //总条数
-        //$total = $query->where(['!=','status','-1'])->count();
-        $total = $query->where(['>','status',0])->orderBy('id asc')->count();
+        $query = Goods::find()->Where(['>','status',0]);
+        if($name){
+            $query = Goods::find()->andWhere(['like','name',$name]);
+            //var_dump($name);/*exit;*/
+        }
+        if($sn){
+            $query = Goods::find()->andWhere(['like','sn',$sn]);
+            //var_dump($sn);/*exit;*/
+        }
+        if($price1 || $price2){
+//            var_dump($price1,$price2);exit;
+            if($price2){
+//                var_dump(1111);exit;
+                $query = Goods::find()->andWhere(['and',['>=','shop_price',$price1],['<=','shop_price',$price2]]);
+            }else{
+//                var_dump(2222);exit;
+                $query = Goods::find()->andWhere(['>=','shop_price',$price1]);
+            }
+        }
+
+//            var_dump($query);exit;
+
+
+
+//        $query = Goods::find()->andWhere(["name like '%{$name}%'",
+//            "sn like '%{$sn}%'"]);
+//        var_dump($query);exit;
+        //总条数/*->where(['>','status',0])*/
+        $total = $query->orderBy('id asc')->count();
         //var_dump($total);exit;
         //每页显示条数 10
         $perPage = 10;
@@ -55,6 +80,7 @@ class GoodsController extends \yii\web\Controller
 //            var_dump($model);
 //            var_dump($goods_intro);exit;
             if ($model->validate() && $goods_intro->validate()) {
+                //货号
                 $sn= GoodsDayCount::getGoodsSn();
 //              var_dump($sn);exit;
                 $model->sn=$sn;
@@ -99,9 +125,9 @@ class GoodsController extends \yii\web\Controller
 //            var_dump($model);
 //            var_dump($goods_intro);exit;
             if ($model->validate() && $goods_intro->validate()) {
-                $sn= GoodsDayCount::getGoodsSn();
-//              var_dump($sn);exit;
-                $model->sn=$sn;
+/*              $sn= GoodsDayCount::getGoodsSn();
+              var_dump($sn);exit;
+                $model->sn=$sn;*/
                 //默认商品状态正常
                 $model->status=1;
                 $model->save();
@@ -115,7 +141,7 @@ class GoodsController extends \yii\web\Controller
                 exit;
             }
             //输出保存成功
-            \yii::$app->session->setFlash('success','添加成功!');
+            \yii::$app->session->setFlash('success','修改成功!');
             //跳转到列表页
             return $this->redirect(['goods/index']);
         }
