@@ -15,35 +15,30 @@ use yii\web\Request;
 class GoodsController extends \yii\web\Controller
 {
     //显示页面
-    public function actionIndex($name='',$sn='',$price1='',$price2='')
+    public function actionIndex()
     {
-        $query = Goods::find()->Where(['>','status',0]);
-        if($name){
-            $query = Goods::find()->andWhere(['like','name',$name]);
-            //var_dump($name);/*exit;*/
-        }
+        $name=\Yii::$app->request->get('name');
+        $sn=\Yii::$app->request->get('sn');
+        $price1=\Yii::$app->request->get('price1');
+        $price2=\Yii::$app->request->get('price2');
+//        var_dump($name);exit;
+        $query = Goods::find()->andWhere(['>','status',0]);
+
         if($sn){
-            $query = Goods::find()->andWhere(['like','sn',$sn]);
-            //var_dump($sn);/*exit;*/
+            $query->andWhere(['like','sn',$sn]);
         }
-        if($price1 || $price2){
-//            var_dump($price1,$price2);exit;
-            if($price2){
-//                var_dump(1111);exit;
-                $query = Goods::find()->andWhere(['and',['>=','shop_price',$price1],['<=','shop_price',$price2]]);
-            }else{
-//                var_dump(2222);exit;
-                $query = Goods::find()->andWhere(['>=','shop_price',$price1]);
-            }
+        if($price1){
+            $query->andWhere(['>=','shop_price',$price1]);
+        }
+        if($price2){
+            $query->andWhere(['<=','shop_price',$price2]);
+        }
+        if($name){
+            $query->andWhere(['like','name',$name]);
         }
 
-//            var_dump($query);exit;
 
 
-
-//        $query = Goods::find()->andWhere(["name like '%{$name}%'",
-//            "sn like '%{$sn}%'"]);
-//        var_dump($query);exit;
         //总条数/*->where(['>','status',0])*/
         $total = $query->orderBy('id asc')->count();
         //var_dump($total);exit;
@@ -199,6 +194,14 @@ class GoodsController extends \yii\web\Controller
         //添加成功保存提示信息到session中然后跳转首页
         \Yii::$app->session->setFlash('success','恢复成功');
         return $this->redirect(['goods/index']);
+    }
+
+
+    //查看商品详情
+    public function actionShow($id)
+    {
+        $model = GoodsIntro::findOne($id);
+        return $this->render('show',['model'=>$model]);
     }
 
 

@@ -1,7 +1,6 @@
 
 <div class="table-responsive">
     <form action="" method="get">
-
         <div class="input-group col-md-2 pull-right" >
             <input name="price2" type="text" class="form-control"placeholder="商品最高价格" / >
             <span class="input-group-btn">
@@ -12,15 +11,12 @@
         <div class="input-group col-md-2 pull-right" >
             <input name="price1" type="text" class="form-control"placeholder="商品起始价格" />
         </div>
-
         <div class="input-group col-md-2 pull-right" >
             <input name="sn" type="text" class="form-control"placeholder="商品货号" / >
         </div>
         <div class="input-group col-md-2 pull-right" >
             <input name="name" type="text" class="form-control"placeholder="商品名称" / >
-
         </div>
-
     </form>
 
 
