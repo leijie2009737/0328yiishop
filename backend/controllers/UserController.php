@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\LoginForm;
 use backend\models\User;
 use yii\data\Pagination;
 use yii\web\Request;
@@ -103,7 +104,7 @@ class UserController extends \yii\web\Controller
      */
     public function actionLogin()
     {
-        $model=new User();
+        $model=new LoginForm();
         //判断请求方式
         $request=new Request();
         if($request->isPost){
@@ -123,8 +124,10 @@ class UserController extends \yii\web\Controller
     /*
      * 管理员注销
      */
-    public function actionLogout()
-    {
+    public function actionLogout(){
 
+        \yii::$app->user->logout();
+        \yii::$app->session->setFlash('success','退出成功!');
+        return $this->redirect(['user/login']);
     }
 }
