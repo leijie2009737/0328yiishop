@@ -6,10 +6,12 @@ use backend\models\Brand;
 use backend\models\Goods;
 use backend\models\GoodsCategory;
 use backend\models\GoodsDayCount;
+use backend\models\GoodsGallery;
 use backend\models\GoodsIntro;
 use flyok666\qiniu\Qiniu;
 use flyok666\uploadifive\UploadAction;
 use yii\data\Pagination;
+use yii\web\NotFoundHttpException;
 use yii\web\Request;
 
 class GoodsController extends \yii\web\Controller
@@ -36,8 +38,6 @@ class GoodsController extends \yii\web\Controller
         if($name){
             $query->andWhere(['like','name',$name]);
         }
-
-
 
         //总条数/*->where(['>','status',0])*/
         $total = $query->orderBy('id asc')->count();
@@ -93,8 +93,10 @@ class GoodsController extends \yii\web\Controller
             }
             //输出保存成功
             \yii::$app->session->setFlash('success','添加成功!');
-            //跳转到列表页
-            return $this->redirect(['goods/index']);
+            //跳转到图片添加页面
+//            return $this->redirect(['goods/index']);
+//            var_dump($model->id);exit;
+            return $this->actionGallery($model->id);
         }
         return $this->render('add',['model'=>$model,'category'=>$category,'categories'=>$categories,'brands'=>$brands,'goods_intro'=>$goods_intro]);
     }
@@ -179,6 +181,10 @@ class GoodsController extends \yii\web\Controller
     public function actionDel($id){
         //根据id从数据库清除一条数据
         Goods::findOne($id)->delete();
+        //删除商品详情
+        GoodsIntro::findOne($id)->delete();
+        //删除商品图片###############
+        GoodsGallery::findAll(['goods_id'=>$id]);#######
         //添加成功保存提示信息到session中然后跳转首页
         \Yii::$app->session->setFlash('danger','清除成功');
         return $this->redirect(['goods/back']);
@@ -201,8 +207,26 @@ class GoodsController extends \yii\web\Controller
     public function actionShow($id)
     {
         $model = GoodsIntro::findOne($id);
+        if($model == null){
+            throw new NotFoundHttpException('商品不存在');
+        }
         return $this->render('show',['model'=>$model]);
     }
+
+
+    //商品图片添加页面
+    public function actionGallery($id)
+    {
+        $model = Goods::findOne(['id'=>$id]);
+        $goods_gallery =new GoodsGallery();
+        if($model==null){
+            throw new NotFoundHttpException('商品图片不存在');
+        }else{
+            return $this->render('gallery',['model'=>$model,'goods_gallery'=>$goods_gallery]);
+        }
+
+    }
+
 
 
     //uploadfive插件

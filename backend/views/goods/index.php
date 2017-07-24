@@ -44,7 +44,7 @@
             <td><?=$model->is_on_sale?'在售':'下架'?></td>
             <td style="width: 208px"><?=\yii\helpers\Html::a('修改',['goods/edit/','id'=>$model->id],['class'=>'btn btn-sm btn-warning'])?>
                 <?=\yii\helpers\Html::a('查看',['goods/show/','id'=>$model->id],['class'=>'btn btn-sm btn-info'])?>
-                <?=\yii\helpers\Html::a('预览',['goods/preview/','id'=>$model->id],['class'=>'btn btn-sm btn-info'])?>
+                <?=\yii\helpers\Html::a('图片',['goods/gallery/','id'=>$model->id],['class'=>'btn btn-sm btn-info'])?>
                 <?=\yii\helpers\Html::a('删除',['goods/recycle','id'=>$model->id],['class'=>'btn btn-sm btn-danger '])?></td>
         </tr>
     <?php endforeach;?>

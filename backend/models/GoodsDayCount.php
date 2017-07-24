@@ -22,7 +22,7 @@ class GoodsDayCount extends \yii\db\ActiveRecord
         if($count){
             //如果有，就商品数加1
             $count->count+=1;
-            var_dump($count);exit;
+//            var_dump($count);exit;
         }else{
             //没有就创建第一个商品
             $count= new self ;
