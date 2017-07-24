@@ -1,13 +1,10 @@
 <?php
+use flyok666\uploadifive\Uploadifive;
 use yii\bootstrap\Html;
 use yii\web\JsExpression;
 
-echo \yii\bootstrap\Html::tag('h1',"$model->name");
-
-echo \yii\bootstrap\Html::fileInput('test', NULL, ['id' => 'test']);
-//显示用户上传的图片
-echo \yii\bootstrap\Html::img($goods_gallery->path?$goods_gallery->path:false,['id'=>'img','height'=>50]);
-echo \flyok666\uploadifive\Uploadifive::widget([
+echo Html::fileInput('test', NULL, ['id' => 'test']);
+echo Uploadifive::widget([
     'url' => yii\helpers\Url::to(['s-upload']),
     'id' => 'test',
     'csrf' => true,

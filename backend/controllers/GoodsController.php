@@ -218,15 +218,29 @@ class GoodsController extends \yii\web\Controller
     public function actionGallery($id)
     {
         $model = Goods::findOne(['id'=>$id]);
-        $goods_gallery =new GoodsGallery();
         if($model==null){
             throw new NotFoundHttpException('商品图片不存在');
         }else{
-            return $this->render('gallery',['model'=>$model,'goods_gallery'=>$goods_gallery]);
+            return $this->render('gallery',['model'=>$model]);
         }
 
     }
 
+
+
+    /*
+     * AJAX删除图片
+     */
+    public function actionDelGallery(){
+        $id = \Yii::$app->request->post('id');
+        $model = GoodsGallery::findOne(['id'=>$id]);
+        if($model && $model->delete()){
+            return 'success';
+        }else{
+            return 'fail';
+        }
+
+    }
 
 
     //uploadfive插件
@@ -270,26 +284,27 @@ class GoodsController extends \yii\web\Controller
                 'beforeSave' => function (UploadAction $action) {},
                 'afterSave' => function (UploadAction $action) {
                     $action->output['fileUrl'] = $action->getWebUrl();//输出文件的相对路径
-//                    $action->getFilename();
-//                    "image/yyyymmddtimerand.jpg"
-//                    $action->getWebUrl();
-//                    "baseUrl + filename, /upload/image/yyyymmddtimerand.jpg"
-//                    $action->getSavePath();
-//                    "/var/www/htdocs/upload/image/yyyymmddtimerand.jpg"
-
-
-                    //将图片上传到七牛云
-//                    $qiniu = new Qiniu(\Yii::$app->params['qiniu']);
-//                    $qiniu->uploadFile(
-//                        $action->getSavePath(), $action->getWebUrl()
-//                    );
-//                    $url = $qiniu->getLink($action->getWebUrl());
-//                    $action->output['fileUrl']  = $url;
+                    $goods_id = \Yii::$app->request->post('goods_id');
+                    if($goods_id){
+                        $model = new GoodsGallery();
+                        $model->goods_id = $goods_id;
+                        $model->path = $action->getWebUrl();
+                        $model->save();
+                        $action->output['fileUrl'] = $model->path;
+                        $action->output['id'] = $model->id;
+                    }else{
+                        $action->output['fileUrl'] = $action->getWebUrl();//输出文件的相对路径
+                    }
                 },
             ],
             //UEditor插件
             'upload' => [
                 'class' => 'kucha\ueditor\UEditorAction',
+                'config' => [
+                    "imageUrlPrefix"  => "http://admin.yii2shop.com",//图片访问路径前缀
+                    "imagePathFormat" => "/upload/{yyyy}{mm}{dd}/{time}{rand:6}" ,//上传保存路径
+                    "imageRoot" => \Yii::getAlias("@webroot"),
+                ],
             ]
 
         ];

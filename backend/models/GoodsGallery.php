@@ -43,4 +43,11 @@ class GoodsGallery extends \yii\db\ActiveRecord
             'path' => '图片地址',
         ];
     }
+
+
+    //删除数据同时删除图片
+    public function afterDelete()
+    {
+        unlink(Yii::getAlias('@webroot').$this->path);
+    }
 }
