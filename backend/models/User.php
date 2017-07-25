@@ -22,6 +22,33 @@ use yii\web\IdentityInterface;
  */
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
+    public $password;
+    //定义场景常量
+    const SCENARIO_ADD = 'add';
+
+
+    /**
+     * @param bool $insert
+     * @return bool
+     * 在保存之前的操作，加密密码
+     */
+    public function beforeSave($insert)
+    {
+        if($insert)//判断是添加还是修改
+        {   //添加
+            $this->status = 10;
+            $this->created_at = time();
+            $this->auth_key = \Yii::$app->security->generateRandomString();
+        }else{
+            $this->updated_at = time();
+        }
+        if($this->password){
+            $this->password_hash = \Yii::$app->security->generatePasswordHash($this->password);
+        }
+        return parent::beforeSave($insert);
+    }
+
+
     /**
      * @inheritdoc
      */
@@ -44,10 +71,12 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             [['email'], 'unique'],
             [['password_reset_token'], 'unique'],*/
 
-            [['username',  'password_hash', 'email'], 'required'],
-            [['username', 'password_hash','email'], 'string', 'max' => 255],
+            [['username','email'], 'required'],
+            ['password','required','on'=>self::SCENARIO_ADD],//密码必填只在添加的时候生效
+            [['username', 'password','email'], 'string', 'max' => 255],
             [['username'], 'unique'],
             [['email'], 'unique'],
+            ['email','email'],
 
         ];
     }
@@ -61,7 +90,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             'id' => 'ID',
             'username' => '用户名',
             'auth_key' => '记住密码',
-            'password_hash' => '密码',
+            'password' => '密码',
             'password_reset_token' => 'Password Reset Token',
             'email' => '邮箱',
             'status' => 'Status',

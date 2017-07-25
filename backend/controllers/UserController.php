@@ -40,7 +40,7 @@ class UserController extends \yii\web\Controller
      */
     public function actionAdd()
     {
-        $model = new User();
+        $model = new User(['scenario'=>User::SCENARIO_ADD]);
         //判断请求方式
         $request=new Request();
         if($request->isPost){
@@ -48,9 +48,6 @@ class UserController extends \yii\web\Controller
             $model->load($request->post());
 //            var_dump($model);exit;
             if($model->validate()){
-
-                //使用hash加密密码
-                $model->password_hash=\Yii::$app->security->generatePasswordHash($model->password_hash);
                 $model->save();
                 \yii::$app->session->setFlash('success','添加成功!');
                 return $this->redirect(['user/index']);
@@ -73,9 +70,6 @@ class UserController extends \yii\web\Controller
             $model->load($request->post());
 //            var_dump($model);exit;
             if($model->validate()){
-
-                //使用hash加密密码
-                $model->password_hash=\Yii::$app->security->generatePasswordHash($model->password_hash);
                 $model->save();
                 \yii::$app->session->setFlash('success','修改成功!');
                 return $this->redirect(['user/index']);
@@ -93,7 +87,8 @@ class UserController extends \yii\web\Controller
     {
         $model =User::findOne(['id'=>$id]);
         $model->status=0;
-        $model->save();
+        $model->save(false);
+//        var_dump($model->getErrors());exit;
         \yii::$app->session->setFlash('success','删除成功!');
         return $this->redirect(['user/index']);
     }
@@ -104,25 +99,16 @@ class UserController extends \yii\web\Controller
      */
     public function actionLogin()
     {
-        $model=new LoginForm();
-
-        //判断请求方式
-        $request=new Request();
-        if($request->isPost){
-            $model->load($request->post());
-            if($model->validate() && $model->login()){
-                //保存登录时间和ip
-                $user = User::findOne(['id'=>\Yii::$app->user->identity['id']]);
-                $user->last_login_ip=$request->getUserIP();
-                $user->last_login_time=time();
-                $user->save();
-                //输出登录成功
-                \yii::$app->session->setFlash('success','登录成功!');
-                //var_dump(\Yii::$app->user->isGuest);exit;
-                return $this->redirect(['user/index']);
+        $model = new LoginForm();
+        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+            //var_dump($model);exit;
+            if($model->login()){
+                \Yii::$app->session->setFlash('sueecss','登录成功');
+                return $this->redirect('index');
             }
+        }else{
+            //var_dump($model->getErrors());exit;
         }
-
         return $this->render('login',['model'=>$model]);
     }
 
