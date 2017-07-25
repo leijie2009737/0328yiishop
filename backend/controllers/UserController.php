@@ -105,11 +105,17 @@ class UserController extends \yii\web\Controller
     public function actionLogin()
     {
         $model=new LoginForm();
+
         //判断请求方式
         $request=new Request();
         if($request->isPost){
             $model->load($request->post());
             if($model->validate() && $model->login()){
+                //保存登录时间和ip
+                $user = User::findOne(['id'=>\Yii::$app->user->identity['id']]);
+                $user->last_login_ip=$request->getUserIP();
+                $user->last_login_time=time();
+                $user->save();
                 //输出登录成功
                 \yii::$app->session->setFlash('success','登录成功!');
                 //var_dump(\Yii::$app->user->isGuest);exit;
