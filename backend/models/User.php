@@ -23,6 +23,9 @@ use yii\web\IdentityInterface;
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
     public $password;
+
+
+
     //定义场景常量
     const SCENARIO_ADD = 'add';
 
@@ -43,7 +46,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             $this->updated_at = time();
         }
         if($this->password){
-            $this->password_hash = \Yii::$app->security->generatePasswordHash($this->password);
+            $this->password_hash =Yii::$app->security->generatePasswordHash($this->password);
         }
         return parent::beforeSave($insert);
     }
@@ -98,6 +101,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             'updated_at' => 'Updated At',
             'last_login_time' => '最后登录时间',
             'last_login_ip' => '最后登陆ip',
+            'new_password1'=>'新密码',
+            'new_password2'=>'确认密码',
         ];
     }
 

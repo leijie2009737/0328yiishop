@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\LoginForm;
+use backend\models\Password;
 use backend\models\User;
 use yii\data\Pagination;
 use yii\web\Request;
@@ -99,17 +100,58 @@ class UserController extends \yii\web\Controller
      */
     public function actionLogin()
     {
+        $admin=['admin'];
         $model = new LoginForm();
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
             //var_dump($model);exit;
             if($model->login()){
-                \Yii::$app->session->setFlash('sueecss','登录成功');
-                return $this->redirect('index');
+//                var_dump(\Yii::$app->user->identity->username);exit;
+                //判断是不是超级管理员登陆
+                $user=\Yii::$app->user->identity->username;
+                if(in_array($user,$admin)){
+                    \Yii::$app->session->setFlash('sueecss','登录成功');
+                    return $this->redirect('index');
+                }else{
+//                    var_dump('user');exit;
+                    \Yii::$app->session->setFlash('sueecss','登录成功');
+                    return $this->redirect(['user/homepage']);
+
+                }
+
             }
         }else{
             //var_dump($model->getErrors());exit;
         }
         return $this->render('login',['model'=>$model]);
+    }
+
+    /*
+     *非超级管理员返回自己的首页
+     */
+    public  function actionHomepage()
+    {
+        return $this->render('homepage');
+    }
+
+
+    /*
+     * 重置密码
+     */
+    public function actionPassword()
+    {
+//        $id=\Yii::$app->user->identity->id;
+//        var_dump(\Yii::$app->user->identity->id);exit;
+//        $userone = User::findOne(['id'=>$id]);
+        $model= new Password();
+        $request = \YII::$app->request;
+        if($request->isPost && $model->load(\Yii::$app->request->post()) && $model->validate() && $model->changePassword()){
+
+//            \Yii::$app->session->setFlash('sueecss','修改密码成功');
+            return $this->redirect(['user/homepage']);
+//            var_dump($model->getErrors());exit;
+
+        }
+        return $this->render('password',['model'=>$model]);
     }
 
 

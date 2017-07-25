@@ -39,7 +39,6 @@ class LoginForm extends Model
                 $user->last_login_time=time();
                 $user->save();
                 return true;
-
             }else{
                 //错误信息
                 $this->addError('password','密码错误');
