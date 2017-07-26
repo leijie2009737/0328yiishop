@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\LoginForm;
-use backend\models\Password;
+use backend\models\PasswordForm;
 use backend\models\User;
 use yii\data\Pagination;
 use yii\web\Request;
@@ -109,11 +109,11 @@ class UserController extends \yii\web\Controller
                 //判断是不是超级管理员登陆
                 $user=\Yii::$app->user->identity->username;
                 if(in_array($user,$admin)){
-                    \Yii::$app->session->setFlash('sueecss','登录成功');
+                    \Yii::$app->session->setFlash('success','登录成功');
                     return $this->redirect('index');
                 }else{
 //                    var_dump('user');exit;
-                    \Yii::$app->session->setFlash('sueecss','登录成功');
+                    \Yii::$app->session->setFlash('success','登录成功');
                     return $this->redirect(['user/homepage']);
 
                 }
@@ -130,6 +130,10 @@ class UserController extends \yii\web\Controller
      */
     public  function actionHomepage()
     {
+        if(\Yii::$app->user->isGuest){
+            \Yii::$app->session->setFlash('success','请登录');
+            return $this->redirect(['user/login']);
+        }
         return $this->render('homepage');
     }
 
@@ -139,20 +143,42 @@ class UserController extends \yii\web\Controller
      */
     public function actionPassword()
     {
+        if(\Yii::$app->user->isGuest){
+
+            \Yii::$app->session->setFlash('success','请登录');
+//            var_dump(\Yii::$app->user->identity->usernmae);exit;
+            return $this->redirect(['user/login']);
+        }
 //        $id=\Yii::$app->user->identity->id;
 //        var_dump(\Yii::$app->user->identity->id);exit;
 //        $userone = User::findOne(['id'=>$id]);
-        $model= new Password();
+        $model= new PasswordForm();
         $request = \YII::$app->request;
         if($request->isPost && $model->load(\Yii::$app->request->post()) && $model->validate() && $model->changePassword()){
 
-//            \Yii::$app->session->setFlash('sueecss','修改密码成功');
+            \Yii::$app->session->setFlash('success','修改密码成功');
             return $this->redirect(['user/homepage']);
 //            var_dump($model->getErrors());exit;
 
         }
         return $this->render('password',['model'=>$model]);
     }
+
+
+/*    //修改自己密码（登录状态才能使用）
+    public function actionChPw(){
+        //表单字段  旧密码 新密码 确认新密码
+        //验证规则  都不能为空  验证旧密码是否正确  新密码不能和旧密码一样  确认新密码和新密码一样
+        //表单验证通过 更新新密码
+        $model = new PasswordForm();
+        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+            //验证通过，更新新密码
+            \Yii::$app->session->setFlash('success','密码修改成功');
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('password',['model'=>$model]);
+    }*/
 
 
     /*

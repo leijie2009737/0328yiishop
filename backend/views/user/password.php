@@ -1,4 +1,5 @@
 <?php
+
 $form = \yii\bootstrap\ActiveForm::begin();
 //var_dump(\Yii::$app->user->identity->password_hash);exit;
 echo $form->field($model,'password')->passwordInput();

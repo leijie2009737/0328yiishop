@@ -4,7 +4,7 @@ namespace backend\models;
 use Yii;
 use yii\db\ActiveRecord;
 
-class Password extends ActiveRecord
+class PasswordForm extends ActiveRecord
 {
     public $password;
     public $new_password1;
@@ -16,6 +16,10 @@ class Password extends ActiveRecord
             [['password','new_password1','new_password2'],'required','message'=>'{attribute}必填'],
 
            /* ['new_password1','compare','compareAttribute'=>'new_password2'],//规则判断2次输入密码是否正确*/
+
+             /*['new_password1','compare','compareAttribute'=>'new_password2','operator'=>'!='],//新密码不能和旧密码一样*/
+
+           /* ['oldPassword','validatePassword'],//验证旧密码是否正确 自定义验证规则*/
         ];
     }
 
@@ -61,12 +65,19 @@ class Password extends ActiveRecord
             $this->addError('password','密码错误');
             return false;
         }
-
-
-
-
     }
 
+/*    //自定义验证方法
+    public function validatePassword()
+    {
+        //只处理验证不通过的情况，添加相应的错误信息
+        //$this->oldPassword
+        if(!\Yii::$app->security->validatePassword($this->oldPassword,\Yii::$app->user->identity->password_hash)){
+            //密码错误
+            $this->addError('oldPassword','旧密码不正确');
+        }
+
+    }*/
 
 
 }
