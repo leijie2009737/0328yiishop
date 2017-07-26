@@ -12,7 +12,8 @@ class LoginForm extends Model
     public function rules(){
         return [
             [['name','password'],'required'],
-            ['rememberMe','boolean']
+            ['rememberMe','boolean'],
+            [['last_login_ip','last_login_time'],'safe'],
         ];
     }
 
@@ -37,7 +38,8 @@ class LoginForm extends Model
                 \yii::$app->user->login($user,$this->rememberMe?3600*24:0);
                 $user->last_login_ip=ip2long(\Yii::$app->request->userIP);
                 $user->last_login_time=time();
-                $user->save();
+//                var_dump($user->last_login_time);exit;
+                $user->save(false);
                 return true;
             }else{
                 //错误信息
