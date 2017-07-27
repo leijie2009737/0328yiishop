@@ -1,14 +1,5 @@
 
 <h1>权限列表</h1>
-<!--<form action="" method="get">
-    <div class="input-group col-md-3 pull-right" >
-        <input name="keywords" type="text" class="form-control"placeholder="请输入文章名字" / >
-        <span class="input-group-btn">
-               <button class="btn btn-info btn-search">查找</button>
-            </span>
-    </div>
-</form>-->
-
 
 <table class="table table-responsive table-bordered">
     <?=\yii\helpers\Html::a('添加',['rbac/add-permission'],['class'=>'btn btn-sm btn-primary'])?>
