@@ -23,7 +23,7 @@ use yii\web\IdentityInterface;
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
     public $password;
-
+    public $roles;
 
 
     //定义场景常量
@@ -80,6 +80,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             [['username'], 'unique'],
             [['email'], 'unique'],
             ['email','email'],
+            ['roles','safe'],
 
         ];
     }
@@ -103,6 +104,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             'last_login_ip' => '最后登陆ip',
             'new_password1'=>'新密码',
             'new_password2'=>'确认密码',
+            'roles'=>'角色(身份)',
         ];
     }
 

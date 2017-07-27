@@ -1,4 +1,5 @@
 <h1>角色列表</h1>
+
 <table style="margin: 10px 0" class="table table-bordered table-condensed">
     <?=\yii\helpers\Html::a('添加',['rbac/add-role'],['class'=>'btn btn-sm btn-primary'])?>
     <tr>

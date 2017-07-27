@@ -6,6 +6,7 @@ use backend\models\LoginForm;
 use backend\models\PasswordForm;
 use backend\models\User;
 use yii\data\Pagination;
+use yii\helpers\ArrayHelper;
 use yii\web\Request;
 
 class UserController extends \yii\web\Controller
@@ -29,7 +30,7 @@ class UserController extends \yii\web\Controller
         ]);
 
         //LIMIT 0,3   ==> limit(3)->offset(0)
-        $models = $query->limit($page->limit)->offset($page->offset)->all();
+        $models = $query->limit($page->limit)->orderBy('id asc')->offset($page->offset)->all();
 
         return $this->render('index',['models'=>$models,'page'=>$page]);
 //        $models =Brand::find()->where(['!=','status','-1'])->all();
@@ -44,12 +45,27 @@ class UserController extends \yii\web\Controller
         $model = new User(['scenario'=>User::SCENARIO_ADD]);
         //判断请求方式
         $request=new Request();
+        $authManager=\Yii::$app->authManager;
+//        $authManager->assign()
         if($request->isPost){
-            //实例化一个文件上传对象
+            //加载提交信息
             $model->load($request->post());
-//            var_dump($model);exit;
+
             if($model->validate()){
                 $model->save();
+//                var_dump($model->id);exit;
+                $userId=$model->id;
+                //给用户赋予角色
+                if(is_array($model->roles)){
+                    //存在角色
+                    foreach ($model->roles as $roleName){
+                        $role = $authManager->getRole($roleName);
+                        if($role){
+                            $authManager->assign($role,$userId);
+                        }
+                    }
+                }
+
                 \yii::$app->session->setFlash('success','添加成功!');
                 return $this->redirect(['user/index']);
             }else{
@@ -78,6 +94,11 @@ class UserController extends \yii\web\Controller
                 var_dump($model->getErrors());
             }
         }
+        //用户角色的回显
+        $authManager=\Yii::$app->authManager;
+        //根据id获取用户的角色
+        $roles = $authManager->getRolesByUser($id);
+        $model->roles = ArrayHelper::map($roles,'name','name');
         return $this->render('add',['model'=>$model]);
     }
 
@@ -87,8 +108,9 @@ class UserController extends \yii\web\Controller
     public function actionDel($id)
     {
         $model =User::findOne(['id'=>$id]);
-        $model->status=0;
-        $model->save(false);
+     /*   $model->status=0;
+        $model->save(false);*/
+        $model->delete();
 //        var_dump($model->getErrors());exit;
         \yii::$app->session->setFlash('success','删除成功!');
         return $this->redirect(['user/index']);
