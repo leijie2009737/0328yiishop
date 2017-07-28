@@ -60,7 +60,8 @@ AppAsset::register($this);
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
-        $menuItems = [
+        $menuItems=\backend\models\Menu::getMenus();
+/*        $menuItems = [
             //['label' => 'Home', 'url' => ['/site/index']],
             ['label'=>'品牌管理','items'=>[
                 ['label'=>'品牌列表','url'=>['brand/index']]
@@ -81,7 +82,7 @@ AppAsset::register($this);
                 ['label'=>'角色列表','url'=>['rbac/role-indexmenu']],
                 ['label'=>'权限列表','url'=>['rbac/per-index']],
             ]],
-        ];
+        ];*/
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
