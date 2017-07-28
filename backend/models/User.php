@@ -23,7 +23,7 @@ use yii\web\IdentityInterface;
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
     public $password;
-    public $roles;
+    public $roles=[];
 
 
     //定义场景常量

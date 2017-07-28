@@ -9,6 +9,7 @@
         <th>权限描述</th>
         <th>操作</th>
     </tr>
+    </thead>
     <tbody>
     <?php foreach($models as $model):?>
         <tr>

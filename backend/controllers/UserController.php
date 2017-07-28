@@ -82,12 +82,25 @@ class UserController extends \yii\web\Controller
     {
         $model =User::findOne(['id'=>$id]);
         $request=new Request();
+        $authManager=\Yii::$app->authManager;
         if($request->isPost){
             //实例化一个文件上传对象
             $model->load($request->post());
 //            var_dump($model);exit;
             if($model->validate()){
                 $model->save();
+                //取消用户的所有角色
+                $authManager->revokeAll($id);
+                //再次赋予角色
+                if(is_array($model->roles)){
+                    //存在角色
+                    foreach ($model->roles as $roleName){
+                        $role = $authManager->getRole($roleName);
+                        if($role){
+                            $authManager->assign($role,$id);
+                        }
+                    }
+                }
                 \yii::$app->session->setFlash('success','修改成功!');
                 return $this->redirect(['user/index']);
             }else{
@@ -95,7 +108,7 @@ class UserController extends \yii\web\Controller
             }
         }
         //用户角色的回显
-        $authManager=\Yii::$app->authManager;
+
         //根据id获取用户的角色
         $roles = $authManager->getRolesByUser($id);
         $model->roles = ArrayHelper::map($roles,'name','name');
@@ -108,6 +121,8 @@ class UserController extends \yii\web\Controller
     public function actionDel($id)
     {
         $model =User::findOne(['id'=>$id]);
+        $authManager=\Yii::$app->authManager;
+        $authManager->revokeAll($id);
      /*   $model->status=0;
         $model->save(false);*/
         $model->delete();
