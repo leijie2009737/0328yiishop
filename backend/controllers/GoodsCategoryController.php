@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 
+use backend\filters\RbacFilter;
 use backend\models\GoodsCategory;
 use yii\data\Pagination;
 use yii\web\HttpException;
@@ -150,5 +151,18 @@ class GoodsCategoryController extends \yii\web\Controller
         //$this->layout = false;
         //不加载布局文件
         return $this->renderPartial('test');
+    }
+
+
+    /*
+ *过滤器行为
+ */
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+            ]
+        ];
     }
 }

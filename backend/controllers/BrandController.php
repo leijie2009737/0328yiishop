@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\Brand;
 use yii\data\Pagination;
 use yii\web\Request;
@@ -20,8 +21,8 @@ class BrandController extends \yii\web\Controller
         //$total = $query->where(['!=','status','-1'])->count();
         $total = $query->where(['>','status',-1])->orderBy('sort desc')->count();
         //var_dump($total);exit;
-        //每页显示条数 2
-        $perPage = 2;
+        //每页显示条数 5
+        $perPage = 5;
         //分页工具类
         $page = new Pagination([
             'totalCount'=>$total,
@@ -216,6 +217,20 @@ class BrandController extends \yii\web\Controller
         //获取该图片在七牛云的地址
         $url = $qiniu->getLink($key);
         var_dump($url);
+    }
+
+
+    /*
+     *过滤器行为
+     */
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                'only'=>['brand/index','brand/add','brand/edit','brand/del'],
+            ]
+        ];
     }
 }
 

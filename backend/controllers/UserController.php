@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\LoginForm;
 use backend\models\PasswordForm;
 use backend\models\User;
@@ -226,5 +227,19 @@ class UserController extends \yii\web\Controller
         \yii::$app->user->logout();
         \yii::$app->session->setFlash('success','退出成功!');
         return $this->redirect(['user/login']);
+    }
+
+
+    /*
+ *过滤器行为
+ */
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                'only'=>['user/add','user/edit','user/index','user/del'],
+            ]
+        ];
     }
 }

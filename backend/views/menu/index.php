@@ -15,7 +15,7 @@
             <td><?='顶级分类'?></td>
             <td><?=$model->url?></td>
             <td><?=\yii\helpers\Html::a('修改',['menu/edit/','id'=>$model->id],['class'=>'btn btn-sm btn-warning'])?>
-                <?=\yii\helpers\Html::a('删除',['menu/del','id'=>$model->id],['class'=>'btn btn-sm btn-danger pull-right'])?></td>
+                <?=\yii\helpers\Html::a('删除',['menu/del/','id'=>$model->id],['class'=>'btn btn-sm btn-danger pull-right'])?></td>
         </tr>
             <?php foreach($model->children as $child):?>
                 <tr>
@@ -25,7 +25,7 @@
                     <td><?=$child->url?></td>
 
                     <td><?=\yii\helpers\Html::a('修改',['menu/edit/','id'=>$child->id],['class'=>'btn btn-sm btn-warning'])?>
-                        <?=\yii\helpers\Html::a('删除',['menu/del','id'=>$child->id],['class'=>'btn btn-sm btn-danger pull-right'])?></td>
+                        <?=\yii\helpers\Html::a('删除',['menu/del/','id'=>$child->id],['class'=>'btn btn-sm btn-danger pull-right'])?></td>
                 </tr>
             <?php endforeach;?>
     <?php endforeach;?>

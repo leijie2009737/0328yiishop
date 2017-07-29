@@ -1,3 +1,4 @@
+
 <table class="table table-bordered table-condensed">
     <?=\yii\helpers\Html::a('添加',['brand/add'],['class'=>'btn btn-sm btn-primary'])?>
     <tr>
@@ -17,8 +18,16 @@
             <td><?=\yii\bootstrap\Html::img($model->logo/*?$student->img:'/upload/default.png'*/,['height'=>50])?></td>
             <td><?=$model->sort?></td>
             <td><?=$model->statusoptions[$model->status]?></td>
-            <td><?=\yii\helpers\Html::a('修改',['brand/edit/','id'=>$model->id],['class'=>'btn btn-sm btn-warning'])?>
-                <?=\yii\helpers\Html::a('删除',['brand/del','id'=>$model->id],['class'=>'btn btn-sm btn-danger pull-right'])?></td>
+            <td><?php
+                $user=Yii::$app->authManager->getPermissionsByUser(Yii::$app->user->id);
+//                var_dump($user);exit;
+                if(Yii::$app->user->can($action->uniqueId)){
+                    echo \yii\helpers\Html::a('修改',['brand/edit/','id'=>$model->id],['class'=>'btn btn-sm btn-warning']);
+                }
+                ?>
+                <?php
+                if(Yii::$app->user->can('brand/del')){
+                echo \yii\helpers\Html::a('删除',['brand/del','id'=>$model->id],['class'=>'btn btn-sm btn-danger pull-right']);}?></td>
         </tr>
     <?php endforeach;?>
 </table>

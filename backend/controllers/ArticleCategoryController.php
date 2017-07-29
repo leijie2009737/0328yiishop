@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\ArticleCategory;
 use yii\data\Pagination;
 use yii\web\Request;
@@ -93,5 +94,18 @@ class ArticleCategoryController extends \yii\web\Controller
             //跳转到列表页
             return $this->redirect(['article-category/index']);
         }
+    }
+
+
+    /*
+ *过滤器行为
+ */
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+            ]
+        ];
     }
 }

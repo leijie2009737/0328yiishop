@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\Menu;
 use cebe\markdown\MarkdownExtra;
 use yii\helpers\ArrayHelper;
@@ -97,5 +98,18 @@ class MenuController extends \yii\web\Controller
     {
         $model=Menu::getMenus();
         var_dump($model);exit;
+    }
+
+
+    /*
+ *过滤器行为
+ */
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+            ]
+        ];
     }
 }
