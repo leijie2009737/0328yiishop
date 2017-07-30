@@ -66,14 +66,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            /*[['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at'], 'required'],
-            [['status', 'created_at', 'updated_at', 'last_login_time', 'last_login_ip'], 'integer'],
-            [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
-            [['auth_key'], 'string', 'max' => 32],
-            [['username'], 'unique'],
-            [['email'], 'unique'],
-            [['password_reset_token'], 'unique'],*/
-
             [['username','email'], 'required'],
             ['password','required','on'=>self::SCENARIO_ADD],//密码必填只在添加的时候生效
             [['username', 'password','email'], 'string', 'max' => 255],

@@ -231,14 +231,14 @@ class UserController extends \yii\web\Controller
 
 
     /*
- *过滤器行为
- */
+     *过滤器行为
+     */
     public function behaviors()
     {
         return [
             'rbac'=>[
                 'class'=>RbacFilter::className(),
-                'only'=>['user/add','user/edit','user/index','user/del'],
+                'only'=>['add','edit','index','del'],
             ]
         ];
     }

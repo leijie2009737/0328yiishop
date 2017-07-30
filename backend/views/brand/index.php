@@ -21,9 +21,14 @@
             <td><?php
                 $user=Yii::$app->authManager->getPermissionsByUser(Yii::$app->user->id);
 //                var_dump($user);exit;
-                if(Yii::$app->user->can($action->uniqueId)){
-                    echo \yii\helpers\Html::a('修改',['brand/edit/','id'=>$model->id],['class'=>'btn btn-sm btn-warning']);
-                }
+                if(Yii::$app->user->can('用户管理',['id'=>$model->id]))
+                    return true;
+                else
+                    return false;
+                return Helper::checkRoute('update',['id'=>$model->id]);
+//                if(Yii::$app->user->can($user->uniqueId)){
+//                    echo \yii\helpers\Html::a('修改',['brand/edit/','id'=>$model->id],['class'=>'btn btn-sm btn-warning']);
+//                }
                 ?>
                 <?php
                 if(Yii::$app->user->can('brand/del')){

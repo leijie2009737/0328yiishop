@@ -228,7 +228,7 @@ class BrandController extends \yii\web\Controller
         return [
             'rbac'=>[
                 'class'=>RbacFilter::className(),
-                'only'=>['brand/index','brand/add','brand/edit','brand/del'],
+                'only'=>['index','add','edit','del'],
             ]
         ];
     }
