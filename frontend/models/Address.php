@@ -10,6 +10,8 @@ use yii\helpers\Json;
  *
  * @property integer $id
  * @property string $name
+ * @property string $sheng
+ * @property string $area
  * @property string $city
  * @property string $address
  * @property string $tel
@@ -34,7 +36,7 @@ class Address extends \yii\db\ActiveRecord
             [['name','sheng','city','area','tel','address'],'required'],
             [['status'], 'safe'],
             [['name'], 'string', 'max' => 20],
-            [['city', 'address'], 'string', 'max' => 255],
+            [['city', 'address','area','sheng'], 'string', 'max' => 255],
             [['tel'], 'string', 'max' => 11],
         ];
     }
@@ -58,8 +60,10 @@ class Address extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
         if($insert){
-
-//            $this->city=$province.$center.$area;
+            //增加
+           $this->sheng=self::getName($this->sheng)->name;
+            $this->city=self::getName($this->city)->name;
+            $this->area=self::getName($this->area)->name;
             $this->user_id=1;
 //            $this->user_id=\Yii::$app->user->identity->id;
             if($this->status){
@@ -68,7 +72,15 @@ class Address extends \yii\db\ActiveRecord
                 $this->status=0;
             }
         }else{
-
+            //修改
+            $this->sheng=self::getName($this->sheng)->name;
+            $this->city=self::getName($this->city)->name;
+            $this->area=self::getName($this->area)->name;
+            if($this->status){
+                $this->status=1;
+            }else{
+                $this->status=0;
+            }
         }
 
         return parent::beforeSave($insert);

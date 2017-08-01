@@ -71,17 +71,17 @@
                     <input type="text" class="txt" name="Member[email]" />
                     <p></p>
                 </li>
-<!--                <li id="tel">-->
-<!--                    <label for="">手机号码：</label>-->
-<!--                    <input type="text" class="txt" value="" name="Member[tel]" id="tel" placeholder=""/>-->
-<!--                    <p></p>-->
-<!--                </li>-->
-<!--                <li id="li_smsCode">-->
-<!--                    <label for="">验证码：</label>-->
-<!--                    <input type="text" class="txt" value="" placeholder="请输入短信验证码" name="Member[smsCode]" disabled="disabled" id="captcha"/> <input type="button" onclick="bindPhoneNum(this)" id="get_captcha" value="获取验证码" style="height: 25px;padding:3px 8px"/>-->
-<!--                    <p></p>-->
-<!--                </li>-->
-<!--                验证码-->
+                <li id="tel">
+                    <label for="">手机号码：</label>
+                    <input type="text" class="txt" value="" name="Member[tel]" id="tel" placeholder=""/>
+                    <p></p>
+                </li>
+                <li id="li_smsCode">
+                    <label for="">验证码：</label>
+                    <input type="text" class="txt" value="" placeholder="请输入短信验证码" name="Member[smsCode]" disabled="disabled" id="captcha"/> <input type="button" onclick="bindPhoneNum(this)" id="get_captcha" value="获取验证码" style="height: 25px;padding:3px 8px"/>
+                    <p></p>
+                </li>
+
                 <li class="checkcode" id="code">
                     <?=$form->field($model,'code')->widget(\yii\captcha\Captcha::className(),['captchaAction'=>'member/captcha'])?>
                     <p></p>
@@ -143,11 +143,17 @@
 <!-- 底部版权 end -->
 <script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript">
+
     function bindPhoneNum(){
         //启用输入框
+        var tel=$('#tel').find('.txt').val;
+        console.debug(tel);
+
         $('#captcha').prop('disabled',false);
 
-        var time=30;
+        var time=60;
+//        var url='/member/test';
+//        var tel='13880166455';
         var interval = setInterval(function(){
             time--;
             if(time<=0){
@@ -163,17 +169,40 @@
         },1000);
     }
     //AJAX提交表单
-    $(".login_btn").click(function(){
+//    $(".login_btn").click(function(){
+    $(".login_form input").blur(function(){
         //清除错误信息
         $("#login_form p").text("");
-        $.post('/member/ajax-register',$("#login_form").serialize(),function(data){
+        $.post('/member/ajax-test',$("#login_form").serialize(),function(data){
             //console.log(data);
             var json = JSON.parse(data);
-            console.log(json);
+            //console.log(json);
             if(json.status){
-                alert('注册成功');
-                //跳转到登录页
-                window.location.href="/member/login";
+                $(".login_btn").click(function(){
+                    //清除错误信息
+//                    $("#login_form p").text("");
+                    $.post('/member/ajax-register',$("#login_form").serialize(),function(data){
+                        //console.log(data);
+                        var json = JSON.parse(data);
+                        //console.log(json);
+                        if(json.status){
+                            alert('注册成功');
+                            //跳转到登录页
+                            window.location.href="/member/login";
+                        }else{
+                            //注册失败 显示错误信息
+
+                            $(json.msg).each(function(i,errors){
+                                console.log(errors);
+                                $.each(errors,function(name,error){
+                                    $("#"+name+" p").text(error.join(","));
+                                });
+
+                            });
+                        }
+                    });
+                    return false;
+                });
             }else{
                 //注册失败 显示错误信息
 

@@ -478,7 +478,8 @@
                     <dd>
                         <a href="/member/edit-address?id=<?=$addres->id?>">修改</a>
                         <a href="/member/del-address?id=<?=$addres->id?>">删除</a>
-                        <a href="/member/chg-status?id=<?=$addres->id?>">设为默认地址</a>
+                        <a href="/member/chg-status?id=<?=$addres->id?>">
+                            <?=$addres->status?'取消默认地址':'设为默认地址'?></a>
                     </dd>
                 </dl>
             <?php endforeach;?>
@@ -633,7 +634,15 @@
     $(function(){
         var url='/member/locations';
         var args='id=0';
+
+//        $("#province").val("四川");
+//        //触发省改变事件
+//        $("#province").change();
+//        $("#center").val("成都");
+//        $("#center").change();
+//        $("#areas").val("武侯区");
         $.getJSON(url,args,function(data){
+
             //将省级数据放入第一个下拉框中
             $(data).each(function(i,v){
                 var html='<option value="'+v.id+'">'+v.name+'</option>';
@@ -648,8 +657,10 @@
             //再清除区县下拉框的元素
             $('#areas option:gt(0)').remove();
             var pid=$(this).val();//获取选中的省级的ID
+            var options=$("#province option:selected");
+            var name=$(options).text();
             var args='id='+pid;
-            //console.debug(args);
+            console.debug(name);
             $.getJSON(url,args,function(data){
                 //console.debug(e);
                 $(data).each(function(i,v){//遍历取出省级下面对应的市级
@@ -666,9 +677,11 @@
             $('#areas option:not(:first)').remove();//清除area内除开第一行的所有选项
             var pid=$(this).val();//获取选中的市级的ID
             var args='id='+pid;//根据父ID等于市级ID取出市级下面对应的区县
-            //console.debug(args);
+            var options=$("#center option:selected");
+            var name=$(options).text();
+            console.debug(name);
             $.getJSON(url,args,function(data){
-                //console.debug(e);
+
                 $(data).each(function(i,v){//遍历取出对应的区县
                     //console.debug(v);
                     var html='<option value="'+v.id+'">'+v.name+'</option>';
@@ -677,7 +690,23 @@
                 });
             });
         });
+        $('#areas').change(function () {
+            var options=$("#areas option:selected");
+            var name=$(options).text();
+            console.debug(name);
+        })
+
+
+
+
     });
+
+    //回显地址修改
+
+
+
+
+
     <?php
     if($model->getErrors()) {
         foreach ($model->errors as $name => $error) {

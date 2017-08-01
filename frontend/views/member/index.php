@@ -134,9 +134,27 @@
 					<h2>全部商品分类</h2>
 					<em></em>
 				</div>
-				
+<!--    ###############    商品的分类	    ################	-->
 				<div class="cat_bd">
-					
+					<?php foreach ($goods_category as $good_category):?>
+                    <div class="cat">
+                        <h3><a href=""><?=$good_category->name?></a> <b></b></h3>
+                        <div class="cat_detail">
+                            <?php $cats1=\backend\models\GoodsCategory::find()->where("parent_id={$good_category->id}")->all();
+                                foreach ($cats1 as $cat1):?>
+                            <dl class="dl_1st">
+                                <dt><a href=""><?=$cat1->name?></a></dt>
+                                    <?php $cats2=\backend\models\GoodsCategory::find()->where("parent_id={$cat1->id}")->all();
+                                    foreach ($cats2 as $cat2):?>
+                                        <dd>
+                                            <a href=""><?=$cat2->name?></a>
+                                        </dd>
+                                    <?php endforeach;?>
+                            </dl>
+                                <?php endforeach;?>
+                        </div>
+                    </div>
+                    <?php endforeach;?>
 					<div class="cat item1">
 						<h3><a href="">图像、音像、数字商品</a> <b></b></h3>
 						<div class="cat_detail">
@@ -149,7 +167,7 @@
 									<a href="">婚恋/两性</a>
 									<a href="">文学</a>
 									<a href="">经管</a>
-									<a href="">畅读VIP</a>						
+									<a href="">畅读VIP</a>
 								</dd>
 							</dl>
 
@@ -184,7 +202,7 @@
 									<a href="">传纪</a>
 									<a href="">艺术</a>
 									<a href="">经管</a>
-									<a href="">畅读VIP</a>						
+									<a href="">畅读VIP</a>
 								</dd>
 							</dl>
 
@@ -384,19 +402,7 @@
 						</div>
 					</div>
 
-					<div class="cat">
-						<h3><a href="">食品饮料、保健食品</a><b></b></h3>
-						<div class="cat_detail none">
-							
-						</div>
-					</div>
 
-					<div class="cat">
-						<h3><a href="">彩票、旅行、充值、票务</a><b></b></h3>
-						<div class="cat_detail none">
-							
-						</div>
-					</div>
 
 				</div>
 

@@ -19,8 +19,8 @@ class GoodsCategoryController extends \yii\web\Controller
         //总条数
         $total = $query->orderBy('tree,lft')->count();
         //var_dump($total);exit;
-        //每页显示条数 5
-        $perPage = 5;
+        //每页显示条数 10
+        $perPage = 10;
         //分页工具类
         $page = new Pagination([
             'totalCount'=>$total,
@@ -29,6 +29,7 @@ class GoodsCategoryController extends \yii\web\Controller
 
         //LIMIT 0,3   ==> limit(3)->offset(0)
         $models = $query->limit($page->limit)->offset($page->offset)->all();
+
         return $this->render('index',['models'=>$models,'page'=>$page]);
     }
 

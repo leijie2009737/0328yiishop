@@ -41,12 +41,14 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username','password','repassword','email','code'],'required'],
+            [['username','password','repassword','email','code','tel'],'required'],
             //两次输入密码一样
             ['repassword','compare','compareAttribute'=>'password'],
 //            ['code','captcha','captchaAction'=>'member/captcha'],
             [['code'], 'captcha','captchaAction'=>'member/captcha','on'=>self::SCENARIO_REGISTER],
-            //验证码规则
+            //手机验证码规则
+//            [['字段名'],match,'pattern'=>'正则表达式','message'=>'提示信息'];
+            ['tel','match','pattern'=>'/^1[34578]\d{9}$/','message'=>'手机号码格式不正确'],
             ['email','email'],
             [['last_login_time', 'last_login_ip', 'status', 'created_at', 'updated_at'], 'integer'],
             [['username'], 'string', 'max' => 50],
@@ -69,7 +71,7 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
             'auth_key' => 'Auth Key',
             'password_hash' => 'Password Hash',
             'email' => '邮箱',
-            'tel' => 'Tel',
+            'tel' => '手机号码',
             'last_login_time' => 'Last Login Time',
             'last_login_ip' => 'Last Login Ip',
             'status' => 'Status',
