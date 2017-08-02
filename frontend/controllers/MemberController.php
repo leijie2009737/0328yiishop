@@ -43,7 +43,7 @@ class MemberController extends \yii\web\Controller
         $model->scenario = Member::SCENARIO_REGISTER;
 
         if($model->load(\Yii::$app->request->post()) && $model->validate() ){
-            //$model->save(false);
+            $model->save(false);
             //保存数据，提示保存成功
             return Json::encode(['status'=>true,'msg'=>'注册成功']);
         }else{
@@ -108,7 +108,6 @@ class MemberController extends \yii\web\Controller
      */
     public function actionLogin(){
         $model= new LoginForm();
-        //$user = new Member();
         //加载数据
         if($model->load(\Yii::$app->request->post())){
             //验证数据
@@ -121,6 +120,18 @@ class MemberController extends \yii\web\Controller
             }
         }
         return $this->render('login',['model'=>$model]);
+    }
+
+
+
+    /*
+     * 用户注销
+     */
+    public function actionLogout(){
+
+        \yii::$app->user->logout();
+        \yii::$app->session->setFlash('success','退出成功!');
+        return $this->redirect(['member/index']);
     }
 ###############################    收货地址    ###############################
     /*

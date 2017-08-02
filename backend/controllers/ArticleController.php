@@ -41,6 +41,7 @@ class ArticleController extends \yii\web\Controller
         $request= new Request();
         if($request->isPost){
             $model->load($request->post());
+//            var_dump($model);exit;
             $article_detail->load($request->post());
             //var_dump($model->id);exit;
             //var_dump($article_detail);exit;

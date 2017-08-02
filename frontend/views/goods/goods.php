@@ -43,6 +43,9 @@
 			</div>
 			<div class="topnav_right fr">
 				<ul>
+                    <li>用户：<?php if(!Yii::$app->user->isGuest){
+                            echo     Yii::$app->user->identity->username;
+                        } ?></li>
 					<li>您好，欢迎来到京西！[<a href="login.html">登录</a>] [<a href="register.html">免费注册</a>] </li>
 					<li class="line">|</li>
 					<li>我的订单</li>
@@ -352,13 +355,16 @@
 						<li><span>上架时间：</span><?=date('Y-m-d',$goods->create_time)?></li>
 						<li class="star"><span>商品评分：</span> <strong></strong><a href="">(已有21人评价)</a></li> <!-- 此处的星级切换css即可 默认为5星 star4 表示4星 star3 表示3星 star2表示2星 star1表示1星 -->
 					</ul>
-					<form action="" method="get" class="choose">
+					<form action="/goods/to-cart" method="get" class="choose">
 						<ul>
 							
 							<li>
 								<dl>
 									<dt>购买数量：</dt>
 									<dd>
+
+                                        <input type="hidden" name="goods_id" value="<?=$goods->id?>"/>
+
 										<a href="javascript:;" id="reduce_num"></a>
 										<input type="text" name="amount" value="1" class="amount"/>
 										<a href="javascript:;" id="add_num"></a>
@@ -374,7 +380,6 @@
 									</dd>
 								</dl>
 							</li>
-
 						</ul>
 					</form>
 				</div>
