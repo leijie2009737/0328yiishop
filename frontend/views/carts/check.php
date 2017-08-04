@@ -22,6 +22,9 @@
         </div>
         <div class="topnav_right fr">
             <ul>
+                <li>用户：<?php if(!Yii::$app->user->isGuest){
+                        echo     Yii::$app->user->identity->username;
+                    } ?></li>
                 <li>您好，欢迎来到京西！[<a href="login.html">登录</a>] [<a href="register.html">免费注册</a>] </li>
                 <li class="line">|</li>
                 <li>我的订单</li>
@@ -65,7 +68,7 @@
             <div class="address_info">
                 <?php foreach($address as $addres):?>
                     <p id="address">
-                        <input type="radio" name="address_id" value="<?=$addres->id?>"/><?=$addres->name?>  <?=$addres->tel?>  <?=$addres->province?> <?=$addres->center?> <?=$addres->address?>
+                        <input type="radio" name="address_id" checked="checked" value="<?=$addres->id?>"/><?=$addres->name?>  <?=$addres->tel?>  <?=$addres->sheng?> <?=$addres->city?> <?=$addres->address?>
                     </p>
                 <?php endforeach;?>
             </div>
@@ -154,7 +157,7 @@
                 <tbody>
                 <?php foreach($goods as $good):?>
                     <tr>
-                        <td class="col1"><a href=""><img src="<?=$good['logo']?>" alt="" /></a>  <strong><a href=""><?=$good['name']?></a></strong></td>
+                        <td class="col1"><a href=""><img src="http://admin.yiishop.com<?=$good['logo']?>" alt="" /></a>  <strong><a href=""><?=$good['name']?></a></strong></td>
                         <td class="col3"><?=$good['shop_price']?></td>
                         <td class="col4"> <?=$carts[$good['id']]?></td>
                         <td class="col5"><span><?=sprintf("%.2f",$good['shop_price']*$carts[$good['id']])?></span></td>
@@ -234,9 +237,9 @@
         console.log(address_id);
         console.log(delivery_id);
         console.log(payment_id);
-        $.getJSON('/order/add-order',{address_id:address_id,delivery_id:delivery_id,payment_id:payment_id},function(data){
+        $.getJSON('/carts/add-order',{address_id:address_id,delivery_id:delivery_id,payment_id:payment_id},function(data){
             console.log(data);
-            window.location.href='/order/end';
+            window.location.href='/carts/end';
         });
     })
 </script>

@@ -185,7 +185,7 @@ class MemberController extends \yii\web\Controller
                 \yii::$app->session->setFlash('success','登陆成功');
                 $referrer=\Yii::$app->request->getReferrer();
                 if($referrer='http://www.yiishop.com/goods/show-cart'){
-                    return $this->redirect(['carts/check-order']);
+                    return $this->redirect(['carts/order']);
                 }
 //                var_dump($referrer);exit;
                 return $this->redirect(['goods/index']);
