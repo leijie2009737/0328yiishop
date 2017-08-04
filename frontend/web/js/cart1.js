@@ -66,6 +66,26 @@ $(function(){
         var goods_id = $(this).closest('tr').attr('data-id');
         changeNum(goods_id,$(this).val());
     });
+
+    // console.debug($('.co16').find('a'));
+    //删除商品
+    $('.col6').find('a').click(function(){
+        //发送ajax请求，删除对应的数据 cookie或者数据库
+        var date = {};
+        date.goods_id = $(this).closest('tr').attr('data-id');
+        console.log(date);
+        var that = $(this);
+        $.post('ajax-del',date,function(rtn){
+            if(rtn){
+                console.log('删除成功');
+                that.closest('tr').remove();
+                // getTotal();
+            }else {
+                console.log('删除失败')
+            }
+        });
+    });
+
 });
 
 var changeNum = function(goods_id,amount){
@@ -73,3 +93,4 @@ var changeNum = function(goods_id,amount){
         console.log(data);
     });
 };
+

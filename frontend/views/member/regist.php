@@ -4,10 +4,10 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <title>用户注册</title>
     <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/base.css" type="text/css">
-    <link rel="stylesheet" href="/style/global.css" type="text/css">
-    <link rel="stylesheet" href="/style/header.css" type="text/css">
-    <link rel="stylesheet" href="/style/login.css" type="text/css">
-    <link rel="stylesheet" href="/style/footer.css" type="text/css">
+    <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/global.css" type="text/css">
+    <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/header.css" type="text/css">
+    <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/login.css" type="text/css">
+    <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/footer.css" type="text/css">
 </head>
 <body>
 <!-- 顶部导航 start -->
@@ -35,7 +35,7 @@
 <!-- 页面头部 start -->
 <div class="header w990 bc mt15">
     <div class="logo w990">
-        <h2 class="fl"><a href="index.html"><img src="/images/logo.png" alt="京西商城"></a></h2>
+        <h2 class="fl"><a href="index.html"><img src="<?=Yii::getAlias('@web')?>/images/logo.png" alt="京西商城"></a></h2>
     </div>
 </div>
 <!-- 页面头部 end -->
@@ -51,40 +51,39 @@
             <!--<form action="" method="post" id="login_form">-->
             <?php $form = \yii\widgets\ActiveForm::begin(['id'=>'login_form'])?>
             <ul>
-                <li id="username">
+                <li id="li_username">
                     <label for="">用户名：</label>
                     <input type="text" class="txt" name="Member[username]" />
-                    <p></p>
+                    <p style="color: red"></p>
                 </li>
-                <li id="password">
+                <li id="li_password">
                     <label for="">密码：</label>
                     <input type="password" class="txt" name="Member[password]" />
-                    <p></p>
+                    <p style="color: red"></p>
                 </li>
-                <li id="rePassword">
+                <li id="li_re_password">
                     <label for="">确认密码：</label>
                     <input type="password" class="txt" name="Member[repassword]" />
-                    <p> </p>
+                    <p style="color: red"></p>
                 </li>
-                <li id="email">
+                <li id="li_email">
                     <label for="">邮箱：</label>
                     <input type="text" class="txt" name="Member[email]" />
-                    <p></p>
+                    <p style="color: red"></p>
                 </li>
-                <li id="tel">
+                <li id="li_tel">
                     <label for="">手机号码：</label>
                     <input type="text" class="txt" value="" name="Member[tel]" id="tel" placeholder=""/>
-                    <p></p>
+                    <p style="color: red"></p>
                 </li>
-                <li id="li_smsCode">
+                <li id="li_telCode">
                     <label for="">验证码：</label>
-                    <input type="text" class="txt" value="" placeholder="请输入短信验证码" name="Member[smsCode]" disabled="disabled" id="captcha"/> <input type="button" onclick="bindPhoneNum(this)" id="get_captcha" value="获取验证码" style="height: 25px;padding:3px 8px"/>
-                    <p></p>
+                    <input type="text" class="txt" value="" placeholder="请输入短信验证码" name="Member[telCode]" disabled="disabled" id="captcha"/> <input type="button" onclick="bindPhoneNum(this)" id="get_captcha" value="获取验证码" style="height: 25px;padding:3px 8px"/>
+                    <p style="color: red"></p>
                 </li>
-
-                <li class="checkcode" id="code">
+                <li class="checkcode" id="li_code">
                     <?=$form->field($model,'code')->widget(\yii\captcha\Captcha::className(),['captchaAction'=>'member/captcha'])?>
-                    <p></p>
+                    <p style="color: red"></p>
                 </li>
 
                 <li>
@@ -134,90 +133,92 @@
         © 2005-2013 京东网上商城 版权所有，并保留所有权利。  ICP备案证书号:京ICP证070359号
     </p>
     <p class="auth">
-        <a href=""><img src="/images/xin.png" alt="" /></a>
-        <a href=""><img src="/images/kexin.jpg" alt="" /></a>
-        <a href=""><img src="/images/police.jpg" alt="" /></a>
+        <a href=""><img src="<?=Yii::getAlias('@web')?>/images/xin.png" alt="" /></a>
+        <a href=""><img src="<?=Yii::getAlias('@web')?>/images/kexin.jpg" alt="" /></a>
+        <a href=""><img src="<?=Yii::getAlias('@web')?>/images/police.jpg" alt="" /></a>
         <a href=""><img src="/images/beian.gif" alt="" /></a>
     </p>
 </div>
 <!-- 底部版权 end -->
 <script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript">
-
     function bindPhoneNum(){
-        //启用输入框
-        var tel=$('#tel').find('.txt').val;
-        console.debug(tel);
+        $(function (){
+            var tels = $("#tel").val();
+            var flag = false;
+            var myreg = /^(((13[0-9]{1})|(14[0-9]{1})|(17[0]{1})|(15[0-3]{1})|(15[5-9]{1})|(18[0-9]{1}))+\d{8})$/;
+            if(tels == ''){
+                alert("手机号码不能为空！")
+            }else if(tels.length !=11){
+                alert("请输入有效的手机号码！")
+            }else if(!myreg.test(tels)){
+                alert("请输入有效的手机号码！")
+            }else {
+                flag = true;
+                $('#captcha').prop('disabled',false);
 
-        $('#captcha').prop('disabled',false);
+                var time=60;
+                var interval = setInterval(function(){
+                    time--;
+                    if(time<=0){
+                        clearInterval(interval);
+                        var html = '获取验证码';
+                        $('#get_captcha').prop('disabled',false);
+                    } else{
+                        var html = time + ' 秒后再次获取';
+                        $('#get_captcha').prop('disabled',true);
+                    }
 
-        var time=60;
-//        var url='/member/test';
-//        var tel='13880166455';
-        var interval = setInterval(function(){
-            time--;
-            if(time<=0){
-                clearInterval(interval);
-                var html = '获取验证码';
-                $('#get_captcha').prop('disabled',false);
-            } else{
-                var html = time + ' 秒后再次获取';
-                $('#get_captcha').prop('disabled',true);
+                    $('#get_captcha').val(html);
+                },1000);
+                //console.debug(tels);
+                $.post('tel',{tels:tels},function (data) {
+                    var json = JSON.parse(data);
+                    //console.log(json);
+                    if(json.status){
+                        alert('短信发送成功');
+                        //跳转到登录页
+                        //window.location.href="/member/login";
+                    }else{
+                        //注册失败 显示错误信息
+                        $(json.msg).each(function(i,errors){
+                            $.each(errors,function(name,error){
+                                $("#li_"+name+" p").text(error.join(","));
+                            });
+
+                        });
+                    }
+                })
             }
-
-            $('#get_captcha').val(html);
-        },1000);
+        })
     }
+
+
     //AJAX提交表单
-//    $(".login_btn").click(function(){
-    $(".login_form input").blur(function(){
+    $(".login_btn").click(function(){
         //清除错误信息
         $("#login_form p").text("");
-        $.post('/member/ajax-test',$("#login_form").serialize(),function(data){
+        $.post('/member/ajax-regist',$("#login_form").serialize(),function(data){
             //console.log(data);
             var json = JSON.parse(data);
             //console.log(json);
             if(json.status){
-                $(".login_btn").click(function(){
-                    //清除错误信息
-//                    $("#login_form p").text("");
-                    $.post('/member/ajax-register',$("#login_form").serialize(),function(data){
-                        //console.log(data);
-                        var json = JSON.parse(data);
-                        //console.log(json);
-                        if(json.status){
-                            alert('注册成功');
-                            //跳转到登录页
-                            window.location.href="/member/login";
-                        }else{
-                            //注册失败 显示错误信息
-
-                            $(json.msg).each(function(i,errors){
-                                console.log(errors);
-                                $.each(errors,function(name,error){
-                                    $("#"+name+" p").text(error.join(","));
-                                });
-
-                            });
-                        }
-                    });
-                    return false;
-                });
+                alert('注册成功');
+                //跳转到登录页
+                window.location.href="/member/login";
             }else{
                 //注册失败 显示错误信息
-
                 $(json.msg).each(function(i,errors){
-                    console.log(errors);
+                    //console.log(errors);
+
                     $.each(errors,function(name,error){
-                        $("#"+name+" p").text(error.join(","));
+                        $("#li_"+name+" p").text(error.join(","));
                     });
 
                 });
             }
         });
-        return false;
     });
-
 
 
     //更换验证码
@@ -227,6 +228,12 @@
             //console.log(json.url);
         });
     });
+
+    //    手机验证码
+
+
+
+
 </script>
 </body>
 </html>

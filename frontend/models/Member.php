@@ -25,6 +25,7 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
     public $password;
     public $repassword;
     public $code;
+    public $telCode;
 
     const SCENARIO_REGISTER = 'register';
     /**
@@ -41,7 +42,7 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username','password','repassword','email','code','tel'],'required'],
+            [['username','password','repassword','email','code','tel','telCode'],'required'],
             //两次输入密码一样
             ['repassword','compare','compareAttribute'=>'password'],
 //            ['code','captcha','captchaAction'=>'member/captcha'],
@@ -78,6 +79,7 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'code'=>'验证码 :',
+            'telCode'=>'手机验证码'
         ];
     }
 

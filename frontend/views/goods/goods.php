@@ -162,14 +162,14 @@
 					<?php foreach ($models as $model) :?>
 					<div class="cat item1">
 
-						<h3><a href=""><?=$model->name?></a> <b></b></h3>
+						<h3><a href="<?=\yii\helpers\Url::to(['goods/list','category_id'=>$model->id])?>"><?=$model->name?></a> <b></b></h3>
 						<div class="cat_detail none">
 							<dl class="dl_1st">
                                 <?php foreach ($model->children as $child):?>
-								<dt><a href=""><?=$child->name?></a></dt>
+								<dt><a href="<?=\yii\helpers\Url::to(['goods/list','category_id'=>$child->id])?>"><?=$child->name?></a></dt>
 								<dd>
                                     <?php foreach ($child->children as $son):?>
-									<a href=""><?=$son->name?></a>
+									<a href="<?=\yii\helpers\Url::to(['goods/list','category_id'=>$son->id])?>"><?=$son->name?></a>
                                     <?php endforeach;?>
 								</dd>
 							</dl>

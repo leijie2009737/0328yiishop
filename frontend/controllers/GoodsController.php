@@ -24,14 +24,21 @@ class GoodsController extends \yii\web\Controller
     /*
      *商品  列表页
      */
-    public function actionList($id)
+    public function actionList($category_id)
     {   //商品分类$id
-
-        $goods =Goods::find()->where("goods_category_id=$id and status=1")->all();
-        $models=\frontend\models\GoodsCategory::find()->where('parent_id=0')->all();
-        if(!$goods){
-            throw new NotFoundHttpException('你要找的商品不存在!');exit;
+        $models = GoodsCategory::findOne(['id'=>$category_id]);
+        if($models->depth == 2){
+            $models = Goods::find()->where(['goods_category_id'=>$category_id])->all();
+        }else{
+            $ids = $models->leaves()->asArray()->column();
+            //var_dump($ids);exit;
+            $goods = Goods::find()->where(['in','goods_category_id',$ids])->all();
         }
+
+        $models=\frontend\models\GoodsCategory::find()->where('parent_id=0')->all();
+//        if(!$goods){
+//            throw new NotFoundHttpException('你要找的商品不存在!');exit;
+//        }
         return $this->render('list',['goods'=>$goods,'models'=>$models]);
     }
 
@@ -126,6 +133,7 @@ class GoodsController extends \yii\web\Controller
             $cookies = \Yii::$app->request->cookies;
             //var_dump(unserialize($cookies->getValue('cart')));
             $cart = $cookies->get('cart');
+//            var_dump($cart);exit;
             if($cart==null){
                 $carts = [];
             }else{
@@ -133,6 +141,7 @@ class GoodsController extends \yii\web\Controller
             }
             //获取商品数据
             $models = Goods::find()->where(['in','id',array_keys($carts)])->asArray()->all();
+//            var_dump($models);exit;
         }else{
             //2 用户已登录，购物车数据从数据表取
             $cart = Cart::find()->select(['goods_id','amount'])->where(['member_id'=>\Yii::$app->user->identity->id])->asArray()->all();
@@ -157,78 +166,93 @@ class GoodsController extends \yii\web\Controller
     {
         $goods_id = \Yii::$app->request->post('goods_id');
         $amount = \Yii::$app->request->post('amount');
-//      var_dump($goods_id);exit;
-
-        if(\Yii::$app->user->isGuest){
+        if (\Yii::$app->user->isGuest) {
             //未登录时
             $cookies = \Yii::$app->request->cookies;
             //获取cookie中的购物车数据
             $cart = $cookies->get('cart');
-            if($cart==null){
-                $carts = [$goods_id=>$amount];
-            }else{
+            if ($cart == null) {
+                $carts = [$goods_id => $amount];
+            } else {
                 $carts = unserialize($cart->value);
-                if(isset($carts[$goods_id])){
+                if (isset($carts[$goods_id])) {
                     //购物车中已经有该商品，更新数量
                     $carts[$goods_id] = $amount;
-                }else{
+                } else {
                     //购物车中没有该商品
                     $carts[$goods_id] = $amount;
                 }
             }
+//            var_dump($carts);exit;
             //将商品id和商品数量写入cookie
             $cookies = \Yii::$app->response->cookies;
             $cookie = new Cookie([
-                'name'=>'cart',
-                'value'=>serialize($carts),
-                'expire'=>7*24*3600+time()
+                'name' => 'cart',
+                'value' => serialize($carts),
+                'expire' => 7 * 24 * 3600 + time()
             ]);
             $cookies->add($cookie);
+//            var_dump($cookies);exit;
             return 'success';
-        }else{
+        } else {
             //用户登录时
-            $member_id =\Yii::$app->user->identity->id;
-            $cart =Cart::findOne(['goods_id'=>$goods_id,'member_id'=>$member_id]);
+            $member_id = \Yii::$app->user->identity->id;
+            $cart = Cart::findOne(['goods_id' => $goods_id, 'member_id' => $member_id]);
 //            var_dump($cart);exit;
-            $cart->amount=$amount;
+            $cart->amount = $amount;
             $cart->save();
         }
-
     }
 
 
+
+
+//    /*
+//     *删除购物车的数据
+//     */
+//    public function actionGoodsDel($id)
+//    {
+//        if(\Yii::$app->user->isGuest){
+//            $cookies1 = \Yii::$app->request->cookies;
+//            $cookies=\Yii::$app->response->cookies;
+//            $cookie=unserialize($cookies1->getValue('cart'));
+//            unset($cookie[$id]);
+//
+//            //直接覆盖cookie
+//            $del = new Cookie([
+//                'name'=>'cart',
+//                'value'=>serialize($cookie),
+//                'expire'=>7*24*3600+time()
+//            ]);
+//           $cookies->add($del);
+//            $cookie=unserialize($cookies->getValue('cart'));
+////            var_dump($cookie);exit;
+//            return $this->redirect(['show-cart']);
+//        }else{
+//            $car=Cart::findOne(['goods_id'=>$id]);
+//            if($car){
+//                $car->delete();
+//                return $this->redirect(['show-cart']);
+//            }else{
+//                throw new NotFoundHttpException('你要找的商品不存在!');
+//            }
+//
+//        }
+//    }
+
     /*
-     *删除购物车的数据
+     *Ajax删除购物车的数据
      */
-    public function actionGoodsDel($id)
+    public function actionAjaxDel()
     {
-        if(\Yii::$app->user->isGuest){
-            $cookies1 = \Yii::$app->request->cookies;
-            $cookies=\Yii::$app->response->cookies;
-            $cookie=unserialize($cookies1->getValue('cart'));
-            unset($cookie[$id]);
-//            $cookies->remove('cart');
-//            var_dump($cookie);exit;
+        $goods_id = \Yii::$app->request->post('goods_id');
+        return Cart::delCart(intval($goods_id));
+    }
 
-            //直接覆盖cookie
-            $del = new Cookie([
-                'name'=>'cart',
-                'value'=>serialize($cookie),
-                'expire'=>7*24*3600+time()
-            ]);
-           $cookies->add($del);
-            $cookie=unserialize($cookies->getValue('cart'));
-//            var_dump($cookie);exit;
-            return $this->redirect(['show-cart']);
-        }else{
-            $car=Cart::findOne(['goods_id'=>$id]);
-            if($car){
-                $car->delete();
-                return $this->redirect(['show-cart']);
-            }else{
-                throw new NotFoundHttpException('你要找的商品不存在!');
-            }
 
-        }
+    public function actionTest()
+    {
+        $a=\Yii::$app->request->cookies;
+        var_dump($a->getValue('cart'));
     }
 }

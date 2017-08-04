@@ -82,24 +82,28 @@
                     <a href="javascript:;" class="add_num"></a>
                 </td>
                 <?php $all+=$model['shop_price']*$carts[$model['id']];?>
-                <td class="col5">￥<span><?=$model['shop_price']*$carts[$model['id']]?></span></td>
-                <td class="col6" id="del-goods"><a href="<?=\yii\helpers\Url::to(['goods/goods-del','id'=>$model['id']])?>">删除</a></td>
+                <td class="col5">￥<span>
+                        <?=number_format($model['shop_price']*$carts[$model['id']],2,'.','')?>
+                                    </span></td>
+                <td class="col6" id="del-goods"><a href="javascript:void(0);">删除</a></td>
             </tr>
         <?php endforeach;?>
+
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="6">购物金额总计： <strong>￥ <span id="total"><?=$all?></span></strong></td>
+            <td colspan="6">购物金额总计： <strong>￥ <span id="total">
+                        <?=number_format($all,2,'.','')?>
+                        </span></strong></td>
         </tr>
         </tfoot>
     </table>
     <div class="cart_btn w990 bc mt10">
         <a href="" class="continue">继续购物</a>
-        <a href="" class="checkout">结 算</a>
+        <a href="<?=\yii\helpers\Url::to(['carts/order'])?>" class="checkout">结 算</a>
     </div>
 </div>
 <!-- 主体部分 end -->
-
 <div style="clear:both;"></div>
 <!-- 底部版权 start -->
 <div class="footer w1210 bc mt15">
@@ -130,4 +134,14 @@
 <!-- 底部版权 end -->
 </body>
 </html>
+<!--<script>
+    $(function () {
+        $('.co16').find('a').click(function () {
+            console.debug(1111);
+
+        })
+    })
+
+</script>-->
+
 
