@@ -28,6 +28,7 @@ class CartsController extends \yii\web\Controller
         //收货人信息
         $user_id=\Yii::$app->user->identity->id;
         $address=Address::find()->where(['user_id'=>$user_id])->all();
+
 //        var_dump($address);exit;
         //送货方式
         $deliveries=Order::$deliveries;
@@ -52,19 +53,16 @@ class CartsController extends \yii\web\Controller
     public function actionAddOrder($address_id,$delivery_id,$payment_id){
         //实例化模型
         $model=new Order();
+
         //开始事物
         $transaction=\Yii::$app->db->beginTransaction();
-        //$request=new Request();
-        //if($request->isPost){
-        //加载数据
-        // $model->load($request->post());
-        //var_dump($model);exit;
-        //验证数据
-        //if($model->validate()){
-        //var_dump($model);exit;
+        $user_id=\Yii::$app->user->identity->id;
+        $carts=Cart::find()->where(['member_id'=>$user_id])->all();
+        if($carts==null){
+            return json_encode('NULL');
+        }
         try{
             //处理数据
-            $user_id=\Yii::$app->user->identity->id;
             //获取地址信息
             $address=Address::findOne(['user_id'=>$user_id,'id'=>$address_id]);
             $model->member_id=$user_id;
@@ -87,7 +85,6 @@ class CartsController extends \yii\web\Controller
             $model->save(false);
             //处理订单商品表数据
             //获取购物车数据
-            $carts=Cart::find()->where(['member_id'=>$user_id])->all();
             $total=0;
             foreach($carts as $cart){
                 $goods=Goods::findOne(['id'=>$cart->goods_id]);
@@ -139,6 +136,17 @@ class CartsController extends \yii\web\Controller
 
 
     /*
+     *查看订单状态
+     */
+    public function actionShowOrder()
+    {   $member_id=\Yii::$app->user->id;
+        $orders =Order::find()->where(['member_id'=>$member_id])->all();
+
+        return $this->render('order',['orders'=>$orders]);
+    }
+
+
+    /*
      *判断是否登陆
      */
     public function behaviors()
@@ -146,11 +154,11 @@ class CartsController extends \yii\web\Controller
         return [
             'ACF'=>[
                 'class'=>AccessControl::className(),
-                'only'=>['order','add-order'],//哪些操作需要使用该过滤器
+                'only'=>['order','add-order','show-order'],//哪些操作需要使用该过滤器
                 'rules'=>[
                     [
                         'allow'=>true,//是否允许
-                        'actions'=>['order','add-order'],//指定操作
+                        'actions'=>['order','add-order','show-order'],//指定操作
                         'roles'=>['@'],//指定角色 ?表示未认证用户(未登录) @表示已认证用户(已登录)
                     ],
 //                    [
@@ -164,7 +172,18 @@ class CartsController extends \yii\web\Controller
 //                    ],
                 ]
             ]
-
         ];
     }
+
+
+    /*
+     *redis测试
+     */
+    public function actionTest()
+    {
+        $resource=\Yii::$app;
+    }
+
+
+
 }

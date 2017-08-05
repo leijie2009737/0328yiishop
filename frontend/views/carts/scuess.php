@@ -18,7 +18,17 @@
 			</div>
 			<div class="topnav_right fr">
 				<ul>
-					<li>您好，欢迎来到京西！[<a href="login.html">登录</a>] [<a href="register.html">免费注册</a>] </li>
+                    <li><?php if(!Yii::$app->user->isGuest){
+                            echo "用户：".Yii::$app->user->identity->username;
+                        } ?>
+                    </li>
+					<li>您好，欢迎来到京西！
+                        <?php if(!Yii::$app->user->isGuest){
+                            echo "[<a href=\"/member/logout\">注销</a>]";
+                        }else{
+                          echo "[<a href=\"/member/login\">登录</a>] [<a href=\"/member/regist\">免费注册</a>]";
+                        } ?>
+                    </li>
 					<li class="line">|</li>
 					<li>我的订单</li>
 					<li class="line">|</li>
@@ -57,7 +67,7 @@
 		<div class="success_bd">
 			<p><span></span>订单提交成功，我们将及时为您处理</p>
 			
-			<p class="message">完成支付后，你可以 <a href="">查看订单状态</a>  <a href="">继续购物</a> <a href="">问题反馈</a></p>
+			<p class="message">完成支付后，你可以 <a href="/carts/show-order">查看订单状态</a>  <a href="">继续购物</a> <a href="">问题反馈</a></p>
 		</div>
 	</div>
 	<!-- 主体部分 end -->

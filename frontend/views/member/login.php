@@ -80,6 +80,7 @@
                     <input type="submit" value="" class="login_btn" />
                 </li>
             </ul>
+            <input type="hidden" name="LoginForm[url]" value="<?php echo $_SERVER['HTTP_REFERER']?>">
             <?php \yii\widgets\ActiveForm::end()?>
 
             <div class="coagent mt15">

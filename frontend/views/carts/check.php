@@ -22,10 +22,17 @@
         </div>
         <div class="topnav_right fr">
             <ul>
-                <li>用户：<?php if(!Yii::$app->user->isGuest){
-                        echo     Yii::$app->user->identity->username;
-                    } ?></li>
-                <li>您好，欢迎来到京西！[<a href="login.html">登录</a>] [<a href="register.html">免费注册</a>] </li>
+                <li><?php if(!Yii::$app->user->isGuest){
+                        echo "用户：".Yii::$app->user->identity->username;
+                    } ?>
+                </li>
+                <li>您好，欢迎来到京西！
+                    <?php if(!Yii::$app->user->isGuest){
+                        echo "[<a href=\"/member/logout\">注销</a>]";
+                    }else{
+                        echo "[<a href=\"/member/login\">登录</a>] [<a href=\"/member/regist\">免费注册</a>]";
+                    } ?>
+                </li>
                 <li class="line">|</li>
                 <li>我的订单</li>
                 <li class="line">|</li>
@@ -155,13 +162,20 @@
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($goods as $good):?>
+                <?php $num=0;$money=0;
+                foreach($goods as $good):?>
                     <tr>
-                        <td class="col1"><a href=""><img src="http://admin.yiishop.com<?=$good['logo']?>" alt="" /></a>  <strong><a href=""><?=$good['name']?></a></strong></td>
+                        <td class="col1"><a href=""><img src="http://admin.yiishop.com<?=$good['logo']?>" alt="" /></a>
+                            <strong><a href=""><?=$good['name']?></a></strong>
+                        </td>
                         <td class="col3"><?=$good['shop_price']?></td>
                         <td class="col4"> <?=$carts[$good['id']]?></td>
-                        <td class="col5"><span><?=sprintf("%.2f",$good['shop_price']*$carts[$good['id']])?></span></td>
+                        <td class="col5">
+                            <span><?=sprintf("%.2f",$good['shop_price']*$carts[$good['id']])?></span>
+                        </td>
+                        <?=$money+=$good['shop_price']*$carts[$good['id']]?>
                     </tr>
+                    <?=$num+=1?>
                 <?php endforeach;?>
                 </tbody>
                 <tfoot>
@@ -169,8 +183,8 @@
                     <td colspan="5">
                         <ul>
                             <li>
-                                <span>4 件商品，总商品金额：</span>
-                                <em>￥5316.00</em>
+                                <span><?=$num?> 件商品，总商品金额：</span>
+                                <em>￥<?=$money?></em>
                             </li>
                             <li>
                                 <span>返现：</span>
@@ -182,7 +196,7 @@
                             </li>
                             <li>
                                 <span>应付总额：</span>
-                                <em>￥5076.00</em>
+                                <em>￥<?=$money?></em>
                             </li>
                         </ul>
                     </td>
@@ -196,7 +210,7 @@
 
     <div class="fillin_ft">
         <a id="sub-mit" href="javascript:;"><span>提交订单</span></a>
-        <p>应付总额：<strong>￥5076.00元</strong></p>
+        <p>应付总额：<strong>￥<?=$money?>元</strong></p>
 
     </div>
 </div>
@@ -237,10 +251,14 @@
         console.log(address_id);
         console.log(delivery_id);
         console.log(payment_id);
-        $.getJSON('/carts/add-order',{address_id:address_id,delivery_id:delivery_id,payment_id:payment_id},function(data){
+        if(!address_id){
+            alert("没有收货地址");
+        }else{$.getJSON('/carts/add-order',{address_id:address_id,delivery_id:delivery_id,payment_id:payment_id},function(data){
             console.log(data);
             window.location.href='/carts/end';
         });
+        }
+
     })
 </script>
 </body>

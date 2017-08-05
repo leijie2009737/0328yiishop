@@ -23,10 +23,17 @@
 			</div>
 			<div class="topnav_right fr">
 				<ul>
-                    <li>用户：<?php if(!Yii::$app->user->isGuest){
-                            echo     Yii::$app->user->identity->username;
-                        } ?></li>
-					<li>您好，欢迎来到京西！[<a href="login.html">登录</a>] [<a href="register.html">免费注册</a>] </li>
+                    <li><?php if(!Yii::$app->user->isGuest){
+                            echo "用户：".Yii::$app->user->identity->username;
+                        } ?>
+                    </li>
+                    <li>您好，欢迎来到京西！
+                        <?php if(!Yii::$app->user->isGuest){
+                            echo "[<a href=\"/member/logout\">注销</a>]";
+                        }else{
+                            echo "[<a href=\"/member/login\">登录</a>] [<a href=\"/member/regist\">免费注册</a>]";
+                        } ?>
+                    </li>
 					<li class="line">|</li>
 					<li>我的订单</li>
 					<li class="line">|</li>

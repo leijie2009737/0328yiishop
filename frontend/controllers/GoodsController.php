@@ -28,7 +28,7 @@ class GoodsController extends \yii\web\Controller
     {   //商品分类$id
         $models = GoodsCategory::findOne(['id'=>$category_id]);
         if($models->depth == 2){
-            $models = Goods::find()->where(['goods_category_id'=>$category_id])->all();
+            $goods = Goods::find()->where(['goods_category_id'=>$category_id])->all();
         }else{
             $ids = $models->leaves()->asArray()->column();
             //var_dump($ids);exit;

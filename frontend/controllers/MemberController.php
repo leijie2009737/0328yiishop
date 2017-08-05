@@ -160,37 +160,41 @@ class MemberController extends \yii\web\Controller
                 //q取出cookie中的购物信息
                 $cookies=\Yii::$app->request->cookies;
                 $carts=$cookies->get('cart');
-                if($carts){//如果存在购物信息
+                if($carts)
+                {
+                    //如果存在购物信息
                     $carts=unserialize($carts);
                     foreach(array_keys($carts) as $goods_id){
                         //遍历键值，得到商品id
-                        $model=Cart::find()->andWhere(['goods_id'=>$goods_id])
+                        $models=Cart::find()->andWhere(['goods_id'=>$goods_id])
                             ->andWhere(['member_id'=>$member_id])
                             ->one();
-                        if($model){
-                            $model->amount+=$carts[$goods_id];
-                            $model->save();
+                        if($models){
+                            $models->amount+=$carts[$goods_id];
+                            $models->save();
                         }else{
-                            $model=new Cart();
-                            $model->goods_id=$goods_id;
-                            $model->amount=$carts[$goods_id];
-                            $model->member_id=$member_id;
-                            $model->save();
+                            $models=new Cart();
+                            $models->goods_id=$goods_id;
+                            $models->amount=$carts[$goods_id];
+                            $models->member_id=$member_id;
+                            $models->save();
                         }
                     }
                     \Yii::$app->response->cookies->remove('cart');
                 }
 
                 //var_dump($model);exit;
-                \yii::$app->session->setFlash('success','登陆成功');
-                $referrer=\Yii::$app->request->getReferrer();
-                if($referrer='http://www.yiishop.com/goods/show-cart'){
+//                \yii::$app->session->setFlash('success','登陆成功');
+//                $referrer=\Yii::$app->request->getReferrer();
+//                var_dump($model->url);exit;
+
+                if($model->url=='http://www.yiishop.com/goods/show-cart'){
                     return $this->redirect(['carts/order']);
                 }
 //                var_dump($referrer);exit;
-                return $this->redirect(['goods/index']);
+                return $this->redirect(['member/index']);
             }else{
-                //print_r($model->getErrors());exit;
+                print_r($model->getErrors());exit;
             }
         }
         return $this->render('login',['model'=>$model]);

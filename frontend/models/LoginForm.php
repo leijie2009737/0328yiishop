@@ -8,12 +8,14 @@ class LoginForm extends Model{
     public $password;
     public $code;//验证码
     public $rememberMe;//记住密码
+    public $url;
 
     public function rules()
     {
         return [
             [['username','password'],'required'],
             ['rememberMe','string'],
+            ['url','safe'],
             //验证码验证规则
             ['code','captcha','captchaAction'=>'member/captcha'],
         ];
