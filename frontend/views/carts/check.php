@@ -173,9 +173,9 @@
                         <td class="col5">
                             <span><?=sprintf("%.2f",$good['shop_price']*$carts[$good['id']])?></span>
                         </td>
-                        <?=$money+=$good['shop_price']*$carts[$good['id']]?>
+                        <?php $money+=$good['shop_price']*$carts[$good['id']]?>
                     </tr>
-                    <?=$num+=1?>
+                    <?php $num+=1?>
                 <?php endforeach;?>
                 </tbody>
                 <tfoot>
@@ -186,10 +186,10 @@
                                 <span><?=$num?> 件商品，总商品金额：</span>
                                 <em>￥<?=$money?></em>
                             </li>
-                            <li>
-                                <span>返现：</span>
-                                <em>-￥240.00</em>
-                            </li>
+<!--                            <li>-->
+<!--                                <span>返现：</span>-->
+<!--                                <em>-￥240.00</em>-->
+<!--                            </li>-->
                             <li>
                                 <span>运费：</span>
                                 <em>￥10.00</em>

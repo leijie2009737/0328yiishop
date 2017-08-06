@@ -181,7 +181,7 @@ class CartsController extends \yii\web\Controller
      */
     public function actionTest()
     {
-        $resource=\Yii::$app;
+        phpinfo();
     }
 
 
