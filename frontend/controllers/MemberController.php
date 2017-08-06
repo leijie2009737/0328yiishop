@@ -50,6 +50,10 @@ class MemberController extends \yii\web\Controller
 
     }
 
+
+    /*
+     *发送短信验证
+     */
     public function actionTel(){
         //$goods_id = Yii::$app->request->post('goods_id');
         $tels =\Yii::$app->request->post('tels');
@@ -127,7 +131,7 @@ class MemberController extends \yii\web\Controller
 ##################       商城首页       ##############
     public function actionIndex()
     {
-        $goods_category  = GoodsCategory::find()->orderBy('tree,lft')->where('depth=0')->limit(10)->all();
+        $goods_category  = GoodsCategory::find()->orderBy('tree,lft')->where('depth=0')->all();
         /*
          *第二种方法：
          * 使用后台的GoodsCategoryphp  和  GoodsCategoryQuery.php
@@ -136,7 +140,10 @@ class MemberController extends \yii\web\Controller
          */
 
 
-        return $this->render('index',['goods_category'=>$goods_category]);
+        $contents=$this->render('index',['goods_category'=>$goods_category]);
+        file_put_contents('index.html',$contents);
+
+//        return $this->render('index',['goods_category'=>$goods_category]);
     }
 
 
