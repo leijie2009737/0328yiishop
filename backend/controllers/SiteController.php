@@ -26,7 +26,7 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index','update-index'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -94,5 +94,17 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+
+    //更新首页静态页
+    public function actionUpdateIndex()
+    {
+        //ob缓存 ob_start()  输出 获取页面输出的内容（获取ob缓冲区内容）ob_get_contents()  保存到静态页面 file_put_contents
+        //获取页面输出的内容----->保存到静态页面
+        $contents =  $this->renderPartial('index');
+
+        file_put_contents(\Yii::getAlias('@frontend/web/index.html'),$contents);
+        echo '首页更新成功';
     }
 }

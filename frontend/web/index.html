@@ -23,17 +23,9 @@
 			</div>
 			<div class="topnav_right fr">
 				<ul>
-                    <li><?php if(!Yii::$app->user->isGuest){
-                            echo "用户：".Yii::$app->user->identity->username;
-                        } ?>
-                    </li>
+                    <li>                    </li>
                     <li>您好，欢迎来到京西！
-                        <?php if(!Yii::$app->user->isGuest){
-                            echo "[<a href=\"/member/logout\">注销</a>]";
-                        }else{
-                            echo "[<a href=\"/member/login\">登录</a>] [<a href=\"/member/regist\">免费注册</a>]";
-                        } ?>
-                    </li>
+                        [<a href="/member/login">登录</a>] [<a href="/member/regist">免费注册</a>]                    </li>
 					<li class="line">|</li>
 					<li>我的订单</li>
 					<li class="line">|</li>
@@ -146,27 +138,58 @@
 				</div>
 <!--    ###############    商品的分类	    ################	-->
 				<div class="cat_bd">
-					<?php foreach ($goods_category as $good_category):?>
-                    <div class="cat">
-                        <h3><a href="<?=\yii\helpers\Url::to(['goods/list','category_id'=>$good_category->id])?>"><?=$good_category->name?></a> <b></b></h3>
+					                    <div class="cat">
+                        <h3><a href="/goods/list?category_id=1">电脑/办公</a> <b></b></h3>
                         <div class="cat_detail">
-                            <?php $cats1=\backend\models\GoodsCategory::find()->where("parent_id={$good_category->id}")->all();
-                                foreach ($cats1 as $cat1):?>
-                            <dl class="dl_1st">
-                                <dt><a href="<?=\yii\helpers\Url::to(['goods/list','category_id'=>$cat1->id])?>"><?=$cat1->name?></a>
+                                                        <dl class="dl_1st">
+                                <dt><a href="/goods/list?category_id=6">笔记本</a>
                                 </dt>
-                                    <?php $cats2=\backend\models\GoodsCategory::find()->where("parent_id={$cat1->id}")->all();
-                                    foreach ($cats2 as $cat2):?>
-                                        <dd>
-                                            <a href="<?=\yii\helpers\Url::to(['goods/list','category_id'=>$cat2->id])?>"><?=$cat2->name?></a>
+                                                                            <dd>
+                                            <a href="/goods/list?category_id=9">华硕游戏笔记本</a>
                                         </dd>
-                                    <?php endforeach;?>
-                            </dl>
-                                <?php endforeach;?>
-                        </div>
+                                                                            <dd>
+                                            <a href="/goods/list?category_id=10">戴尔学生笔记本</a>
+                                        </dd>
+                                                                            <dd>
+                                            <a href="/goods/list?category_id=12">小米笔记本</a>
+                                        </dd>
+                                                                </dl>
+                                                            <dl class="dl_1st">
+                                <dt><a href="/goods/list?category_id=7">超极本</a>
+                                </dt>
+                                                                            <dd>
+                                            <a href="/goods/list?category_id=8">三星超级本</a>
+                                        </dd>
+                                                                </dl>
+                                                        </div>
                     </div>
-                    <?php endforeach;?>
-
+                                        <div class="cat">
+                        <h3><a href="/goods/list?category_id=2">生活家电</a> <b></b></h3>
+                        <div class="cat_detail">
+                                                        <dl class="dl_1st">
+                                <dt><a href="/goods/list?category_id=3">电饭煲</a>
+                                </dt>
+                                                                            <dd>
+                                            <a href="/goods/list?category_id=11">日本电饭煲</a>
+                                        </dd>
+                                                                </dl>
+                                                            <dl class="dl_1st">
+                                <dt><a href="/goods/list?category_id=4">电风扇</a>
+                                </dt>
+                                                                            <dd>
+                                            <a href="/goods/list?category_id=5">美的电风扇</a>
+                                        </dd>
+                                                                </dl>
+                                                            <dl class="dl_1st">
+                                <dt><a href="/goods/list?category_id=13">吸尘器</a>
+                                </dt>
+                                                                            <dd>
+                                            <a href="/goods/list?category_id=14">小米</a>
+                                        </dd>
+                                                                </dl>
+                                                        </div>
+                    </div>
+                    
 
 
 
