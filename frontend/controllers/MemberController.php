@@ -129,22 +129,22 @@ class MemberController extends \yii\web\Controller
     }
 
 ##################       商城首页       ##############
-    public function actionIndex()
-    {
-        $goods_category  = GoodsCategory::find()->orderBy('tree,lft')->where('depth=0')->all();
-        /*
-         *第二种方法：
-         * 使用后台的GoodsCategoryphp  和  GoodsCategoryQuery.php
-         * 调用GoodsCategoryQuery.php里面的children 和其他方法(自己阅读文档)
-         *  然后生成树状图的形式，传递到前台
-         */
-
-
-        $contents=$this->render('index',['goods_category'=>$goods_category]);
-        file_put_contents('index.html',$contents);
-
-//        return $this->render('index',['goods_category'=>$goods_category]);
-    }
+//    public function actionIndex()
+//    {
+//        $goods_category  = GoodsCategory::find()->orderBy('tree,lft')->where('depth=0')->all();
+//        /*
+//         *第二种方法：
+//         * 使用后台的GoodsCategoryphp  和  GoodsCategoryQuery.php
+//         * 调用GoodsCategoryQuery.php里面的children 和其他方法(自己阅读文档)
+//         *  然后生成树状图的形式，传递到前台
+//         */
+//
+//
+//        $contents=$this->render('index',['goods_category'=>$goods_category]);
+//        file_put_contents('index.html',$contents);
+//
+////        return $this->render('index',['goods_category'=>$goods_category]);
+//    }
 
 
 
@@ -199,7 +199,8 @@ class MemberController extends \yii\web\Controller
                     return $this->redirect(['carts/order']);
                 }
 //                var_dump($referrer);exit;
-                return $this->redirect(['member/index']);
+//                return $this->redirect(['member/index']);
+                return $this->redirect(['/index.html']);
             }else{
                 print_r($model->getErrors());exit;
             }
@@ -217,7 +218,7 @@ class MemberController extends \yii\web\Controller
 
         \yii::$app->user->logout();
         \yii::$app->session->setFlash('success','退出成功!');
-        return $this->redirect(['member/index']);
+        return $this->redirect(['/index.html']);
     }
 ###############################    收货地址    ###############################
     /*

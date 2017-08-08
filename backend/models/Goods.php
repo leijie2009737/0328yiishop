@@ -99,4 +99,12 @@ class Goods extends \yii\db\ActiveRecord
     {
         return $this->hasMany(GoodsGallery::className(),['goods_id'=>'id']);
     }
+
+    /*
+     *搜索和商品的对应关系
+     */
+    public function getchildren()
+    {
+        return $this->hasMany(GoodsCategory::className(),['parent_id'=>'id']);
+    }
 }

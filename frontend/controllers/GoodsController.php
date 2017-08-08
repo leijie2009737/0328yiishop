@@ -6,7 +6,9 @@ use backend\models\Goods;
 use backend\models\GoodsCategory;
 use backend\models\GoodsGallery;
 use backend\models\GoodsIntro;
+use frontend\components\SphinxClient;
 use frontend\models\Cart;
+use yii\helpers\ArrayHelper;
 use yii\web\Cookie;
 use yii\web\NotFoundHttpException;
 
@@ -15,11 +17,37 @@ class GoodsController extends \yii\web\Controller
     public $layout=false;
     public $enableCsrfValidation=false;
 
-    public function actionIndex()
-    {
-        return $this->render('index');
-    }
+//    public function actionIndex()
+//    {
+//        return $this->render('index');
+//    }
 
+
+
+    /*
+     *商品搜索
+     */
+    public function actionSearch(){
+        $keys=\Yii::$app->request->get('keys');
+//        var_dump($keys);
+        $cl = new SphinxClient();
+        $cl->SetServer ( '127.0.0.1', 9312);
+        //$cl->SetConnectTimeout ( 10 );
+        $cl->SetArrayResult ( true );
+        // $cl->SetMatchMode ( SPH_MATCH_ANY);
+        $cl->SetMatchMode ( SPH_MATCH_ALL);
+        $cl->SetLimits(0, 1000);
+        $info = "$keys";
+        $res = $cl->Query($info, 'goods');//shopstore_search
+//        print_r($cl);
+//        print_r($res);
+
+        $ids=ArrayHelper::getColumn($res['matches'],'id');
+        $goods=Goods::find()->where(['in','id',$ids])->all();
+        $models=\frontend\models\GoodsCategory::find()->where('parent_id=0')->all();
+//        var_dump($models);
+        return $this->render('list',['goods'=>$goods,'models'=>$models]);
+    }
 
     /*
      *商品  列表页
@@ -250,9 +278,28 @@ class GoodsController extends \yii\web\Controller
     }
 
 
+//    public function actionTest()
+//    {
+//        $a=\Yii::$app->request->cookies;
+//        var_dump($a->getValue('cart'));
+//    }
+
+    //测试coreseek搜索
     public function actionTest()
     {
-        $a=\Yii::$app->request->cookies;
-        var_dump($a->getValue('cart'));
+        $cl = new SphinxClient();
+        $cl->SetServer ( '127.0.0.1', 9312);
+        //$cl->SetConnectTimeout ( 10 );
+        $cl->SetArrayResult ( true );
+        // $cl->SetMatchMode ( SPH_MATCH_ANY);
+        $cl->SetMatchMode ( SPH_MATCH_ALL);
+        $cl->SetLimits(0, 1000);
+        $info = '小米笔记本';
+        $res = $cl->Query($info, 'goods');//shopstore_search
+//        print_r($cl);
+        print_r($res);
+//        var_dump($res);
     }
+
+
 }
